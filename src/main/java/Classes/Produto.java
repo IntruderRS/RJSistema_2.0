@@ -1,17 +1,10 @@
 package Classes;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDate;
 
-@Entity  // <-- ESSA ANOTAÇÃO É OBRIGATÓRIA
+@Entity
 @Table(name = "produtos")
-
 public class Produto {
 
     @Id
@@ -19,14 +12,14 @@ public class Produto {
     @Column(name = "Id_Produto")
     private Long id;
 
-    @Column(name = "Nome")
+    @Column(name = "Nome", nullable = false)
     private String nome;
 
     @Column(name = "ValorCusto")
     private Double valorCusto;
 
-    @Column(name = "PorcentagemLucro")
-    private Double porcetagemLucro;
+    @Column(name = "PorcentagemLucro") // Mantém o nome correto da tabela MySQL
+    private Double porcentagemLucro; // Corrigido erro de grafia ("n")
 
     @Column(name = "ValorVenda")
     private Double valorVenda;
@@ -44,141 +37,79 @@ public class Produto {
     private String codigoBarras;
 
     @Column(name = "NCM")
-    private String NCM;
+    private String ncm;
 
     @Column(name = "Lote")
     private String lote;
 
     @Column(name = "Vencimento")
-    private String vencimento;
+    private LocalDate vencimento; // Refatorado para LocalDate
 
     @Column(name = "observacao", columnDefinition = "TEXT")
     private String observacao;
 
     @ManyToOne
-    @JoinColumn(name = "fk_Categoria") // Nome exato da coluna no MySQL
+    @JoinColumn(name = "fk_Categoria")
     private Categoria categoria;
 
     @ManyToOne
-    @JoinColumn(name = "fk_Fornecedor") // Nome exato da coluna no MySQL
+    @JoinColumn(name = "fk_Fornecedor")
     private Fornecedor fornecedor;
 
-    public Long getId() {
-        return id;
+    // --- CONSTRUTORES ---
+    public Produto() {
     }
 
-    public void setId(Long id) {
+    public Produto(Long id, String nome, Double valorVenda, Integer quantidade) {
         this.id = id;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
         this.nome = nome;
+        this.valorVenda = valorVenda;
+        this.quantidade = quantidade;
     }
 
-    public Double getValorCusto() { 
-        return valorCusto; 
-    }
-    
-    public void setValorCusto(Double valorCusto) { 
-        this.valorCusto = valorCusto; 
-    }
+    // --- GETTERS E SETTERS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public Double getPorcetagemLucro() { 
-        return porcetagemLucro; 
-    }
-    
-    public void setPorcetagemLucro(Double porcetagemLucro) { 
-        this.porcetagemLucro = porcetagemLucro; 
-    }
+    public String getNome() { return nome; }
+    public void setNome(String nome) { this.nome = nome; }
 
-    public Double getValorVenda() { 
-        return valorVenda; }
-    
-    public void setValorVenda(Double valorVenda) { 
-        this.valorVenda = valorVenda; }
+    public Double getValorCusto() { return valorCusto; }
+    public void setValorCusto(Double valorCusto) { this.valorCusto = valorCusto; }
 
-    public Integer getQuantidade() { 
-        return quantidade; 
-    }
-    
-    public void setQuantidade(Integer quantidade) { 
-        this.quantidade = quantidade; 
-    }
+    public Double getPorcentagemLucro() { return porcentagemLucro; }
+    public void setPorcentagemLucro(Double porcentagemLucro) { this.porcentagemLucro = porcentagemLucro; }
 
-    public Double getPeso() { 
-        return peso; }
-    
-    public void setPeso(Double peso) { 
-        this.peso = peso; 
-    }
+    public Double getValorVenda() { return valorVenda; }
+    public void setValorVenda(Double valorVenda) { this.valorVenda = valorVenda; }
 
-    public String getDimensoes() {
-        return dimensoes;
-    }
+    public Integer getQuantidade() { return quantidade; }
+    public void setQuantidade(Integer quantidade) { this.quantidade = quantidade; }
 
-    public void setDimensoes(String dimensoes) {
-        this.dimensoes = dimensoes;
-    }
+    public Double getPeso() { return peso; }
+    public void setPeso(Double peso) { this.peso = peso; }
 
-    public String getCodigoBarras() {
-        return codigoBarras;
-    }
+    public String getDimensoes() { return dimensoes; }
+    public void setDimensoes(String dimensoes) { this.dimensoes = dimensoes; }
 
-    public void setCodigoBarras(String codigoBarras) {
-        this.codigoBarras = codigoBarras;
-    }
+    public String getCodigoBarras() { return codigoBarras; }
+    public void setCodigoBarras(String codigoBarras) { this.codigoBarras = codigoBarras; }
 
-    public String getNCM() {
-        return NCM;
-    }
+    public String getNCM() { return ncm; }
+    public void setNCM(String ncm) { this.ncm = ncm; }
 
-    public void setNCM(String NCM) {
-        this.NCM = NCM;
-    }
+    public String getLote() { return lote; }
+    public void setLote(String lote) { this.lote = lote; }
 
-    
-    public String getLote() {
-        return lote;
-    }
+    public LocalDate getVencimento() { return vencimento; }
+    public void setVencimento(LocalDate vencimento) { this.vencimento = vencimento; }
 
-    public void setLote(String lote) {
-        this.lote = lote;
-    }
+    public String getObservacao() { return observacao; }
+    public void setObservacao(String observacao) { this.observacao = observacao; }
 
-    public String getVencimento() {
-        return vencimento;
-    }
+    public Categoria getCategoria() { return categoria; }
+    public void setCategoria(Categoria categoria) { this.categoria = categoria; }
 
-    public void setVencimento(String vencimento) {
-        this.vencimento = vencimento;
-    }
-
-    public String getObservacao() {
-        return observacao;
-    }
-
-    public void setObservacao(String observacao) {
-        this.observacao = observacao;
-    }
-
-    public Categoria getCategoria() {
-        return categoria;
-    }
-
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
-    }
-
-    public Fornecedor getFornecedor() {
-        return fornecedor;
-    }
-
-    public void setFornecedor(Fornecedor fornecedor) {
-        this.fornecedor = fornecedor;
-    }
-
+    public Fornecedor getFornecedor() { return fornecedor; }
+    public void setFornecedor(Fornecedor fornecedor) { this.fornecedor = fornecedor; }
 }

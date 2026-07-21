@@ -1,7 +1,7 @@
 package Content;
 
 import Classes.Fornecedor;
-import Classes.FornecedorDAO;
+import br.com.sistemarj.rjsistema.persistencia.FornecedorDAO;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import javax.swing.JOptionPane;

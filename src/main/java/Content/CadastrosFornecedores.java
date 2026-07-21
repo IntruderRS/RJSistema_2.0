@@ -1,17 +1,25 @@
 package Content;
 
 import Classes.Fornecedor;
-import Classes.FornecedorDAO;
+import Service.FornecedorService;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import javax.swing.JOptionPane;
 
+
 public class CadastrosFornecedores extends javax.swing.JPanel {
-    
+
+    // CORREÇÃO SOLID: Injeção do Service para gerenciar a lógica de dados
+    private final FornecedorService fornecedorService = new FornecedorService();
+    // Controla o estado de edição/novo registro
     private Fornecedor fornecedorAtual;
 
     public CadastrosFornecedores() {
         initComponents();
     }
-        private void limparCampos() {
+
+    private void limparCampos() {
         txtID.setText("");
         txtRazaoSocial.setText("");
         txtNomeFantasia.setText("");
@@ -29,10 +37,10 @@ public class CadastrosFornecedores extends javax.swing.JPanel {
         txtObservacao.setText("");
         txtDataCadastro.setText("");
         txtNomeVendedor.setText("");
+        fornecedorAtual = null; // Zera a referência de edição
 
-        txtRazaoSocial.requestFocus(); // Coloca o cursor de volta no primeiro campo
+        txtRazaoSocial.requestFocus();
     }
-    
 
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
@@ -320,57 +328,80 @@ public class CadastrosFornecedores extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        
-         // 1. Se não estamos editando, criamos um novo. Se estamos, usamos o atual.
-        if (fornecedorAtual == null) {
-            fornecedorAtual = new Fornecedor();
+    private Fornecedor obterFornecedorDaTela() {
+        Fornecedor fornecedor = (fornecedorAtual != null) ? fornecedorAtual : new Fornecedor();
+
+        if (!txtID.getText().isEmpty()) {
+            fornecedor.setId(Long.parseLong(txtID.getText()));
         }
 
-        // 2. Passa os dados dos campos para o objeto (MUITO IMPORTANTE)
-        fornecedorAtual.setNomeRazao(txtID.getText());
-        fornecedorAtual.setNomeRazao(txtRazaoSocial.getText());
-        fornecedorAtual.setNomeFantasia(txtNomeFantasia.getText());
-        fornecedorAtual.setCnpj(txtCNPJ.getText());
-        fornecedorAtual.setDadosBanco(txtDadosBancarios.getText());
-        fornecedorAtual.setAtividade(txtRamoAtividade.getText());
-        fornecedorAtual.setRua(txtRua.getText());
-        fornecedorAtual.setBairro(txtBairro.getText());
-        fornecedorAtual.setCidade(txtCidade.getText());
-        fornecedorAtual.setEstado(txtEstado.getText());
-        fornecedorAtual.setCep(txtCEP.getText());
-        fornecedorAtual.setContato(txtTelefoneContato.getText());
-        fornecedorAtual.setInscricao(txtInscricaoEstadual.getText());
-        fornecedorAtual.setEmail(txtEmail.getText());
-        fornecedorAtual.setObservacoes(txtObservacao.getText());
-        fornecedorAtual.setDataCadastro(txtDataCadastro.getText());
-        fornecedorAtual.setVendedor(txtNomeVendedor.getText());
+        fornecedor.setNomeRazao(txtRazaoSocial.getText());
+        fornecedor.setNomeFantasia(txtNomeFantasia.getText());
+        fornecedor.setCnpj(txtCNPJ.getText());
+        fornecedor.setInscricao(txtInscricaoEstadual.getText());
+        fornecedor.setRua(txtRua.getText());
+        fornecedor.setBairro(txtBairro.getText());
+        fornecedor.setCidade(txtCidade.getText());
+        fornecedor.setEstado(txtEstado.getText());
+        fornecedor.setCep(txtCEP.getText());
+        fornecedor.setAtividade(txtRamoAtividade.getText());
+        fornecedor.setVendedor(txtNomeVendedor.getText());
+        fornecedor.setContato(txtTelefoneContato.getText());
+        fornecedor.setEmail(txtEmail.getText());
+        fornecedor.setDadosBanco(txtDadosBancarios.getText());
+        fornecedor.setObservacoes(txtObservacao.getText());
 
-        // 3. Salva ou Atualiza
-        FornecedorDAO dao = new FornecedorDAO();
-        try {
-            if (fornecedorAtual.getId() == null) {
-                dao.salvar(fornecedorAtual); // Usa persist
-                JOptionPane.showMessageDialog(this, "Cadastrado com sucesso!");
-            } else {
-                dao.atualizar(fornecedorAtual); // Usa merge
-                JOptionPane.showMessageDialog(this, "Alterado com sucesso!");
+        // CORREÇÃO DA LINHA 346: Conversão segura de String da tela para LocalDate
+        String dataTexto = txtDataCadastro.getText().trim();
+        if (!dataTexto.isEmpty()) {
+            try {
+                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                fornecedor.setDataCadastro(LocalDate.parse(dataTexto, formatador));
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Formato de data de cadastro inválido! Use dd/MM/yyyy.");
             }
-
-            limparCampos();
-            fornecedorAtual = null; // Reseta para o próximo não vir como edição
-
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage());
+        } else {
+            fornecedor.setDataCadastro(null);
         }
+
+        return fornecedor;
+    }
+
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        try {
+            Fornecedor fornecedor = obterFornecedorDaTela();
+
+            // Repassa a responsabilidade de salvar para a camada correta
+            fornecedorService.salvar(fornecedor);
+
+            JOptionPane.showMessageDialog(this, "Fornecedor registrado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            limparCampos();
+        } catch (IllegalArgumentException e) {
+            // Captura amigavelmente as validações vindas do Service
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Validação", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro interno de persistência no sistema.", "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        Dashboard.MainDashboard.mostrarListaFornecedores();
+        String idStr = JOptionPane.showInputDialog(this, "Insira o ID do Fornecedor:");
+        if (idStr != null && !idStr.trim().isEmpty()) {
+            try {
+                Long id = Long.parseLong(idStr.trim());
+                Fornecedor fornecedor = fornecedorService.buscarPorId(id);
+                prepararEdicao(fornecedor);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "O ID fornecido deve ser estritamente numérico.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Erro de Busca", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
-         // 1. Chama o método que limpa os textos dos campos
+        // 1. Chama o método que limpa os textos dos campos
         limparCampos();
 
         // 2. MUITO IMPORTANTE: Reseta a variável de controle
@@ -384,29 +415,40 @@ public class CadastrosFornecedores extends javax.swing.JPanel {
         // System.out.println("Formulário resetado para novo cadastro.");
     }//GEN-LAST:event_btnLimparActionPerformed
 
-     public void prepararEdicao(Fornecedor c) {
-        this.fornecedorAtual = c; // Guarda o cliente que veio da lista
+    public void prepararEdicao(Fornecedor f) {
+    if (f == null) {
+        JOptionPane.showMessageDialog(this, "Fornecedor inválido.");
+        limparCampos();
+        return;
+    }
 
-        // Preenche os campos da tela
-        txtID.setText(String.valueOf(c.getId()));
-        txtRazaoSocial.setText(c.getNomeRazao());
-        txtEmail.setText(c.getEmail());
-        txtCNPJ.setText(c.getCnpj());
-        txtRamoAtividade.setText(c.getAtividade());
-        txtCEP.setText(c.getCep());
-        txtCidade.setText(c.getCidade());
-        txtEstado.setText(c.getEstado());
-        txtTelefoneContato.setText(c.getContato());
-        txtInscricaoEstadual.setText(c.getInscricao());
-        txtDadosBancarios.setText(c.getDadosBanco());
-        txtRua.setText(c.getRua());
-        txtNomeFantasia.setText(c.getNomeFantasia());
-        txtBairro.setText(c.getBairro());
-        txtObservacao.setText(c.getObservacoes());
-        txtDataCadastro.setText(c.getDataCadastro());
-        txtNomeVendedor.setText(c.getVendedor());
-        
-     }
+    this.fornecedorAtual = f;
+
+    txtID.setText(String.valueOf(f.getId()));
+    txtRazaoSocial.setText(f.getNomeRazao());
+    txtNomeFantasia.setText(f.getNomeFantasia());
+    txtCNPJ.setText(f.getCnpj());
+    txtInscricaoEstadual.setText(f.getInscricao());
+    txtRua.setText(f.getRua());
+    txtBairro.setText(f.getBairro());
+    txtCidade.setText(f.getCidade());
+    txtEstado.setText(f.getEstado());
+    txtCEP.setText(f.getCep());
+    txtRamoAtividade.setText(f.getAtividade());
+    txtNomeVendedor.setText(f.getVendedor());
+    txtTelefoneContato.setText(f.getContato());
+    txtEmail.setText(f.getEmail());
+    txtDadosBancarios.setText(f.getDadosBanco());
+    txtObservacao.setText(f.getObservacoes());
+
+    // CORREÇÃO DA LINHA 406: Conversão do LocalDate do banco para Texto na tela
+    if (f.getDataCadastro() != null) {
+        DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        txtDataCadastro.setText(f.getDataCadastro().format(formatador));
+    } else {
+        txtDataCadastro.setText("");
+    }
+}
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;

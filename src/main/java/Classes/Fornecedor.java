@@ -1,38 +1,27 @@
-
 package Classes;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+import java.time.LocalDate;
 
-    @Entity
-    @Table(name = "fornecedor")
-
+@Entity
+@Table(name = "fornecedor")
 public class Fornecedor {
-        
-        @Override
-public String toString() {
-    return this.nomeFantasia; 
-}
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id_Fornecedor")
     private Long id;
 
-    @Column(name = "RazaoSocial")
+    @Column(name = "RazaoSocial", nullable = false)
     private String nomeRazao;
 
     @Column(name = "NomeFantasia")
     private String nomeFantasia;
 
-    @Column(name = "CNPJ")
+    @Column(name = "CNPJ", nullable = false, length = 18)
     private String cnpj;
     
-    @Column(name = "IncricaoEstadual")
+    @Column(name = "IncricaoEstadual") // Mantido o nome físico do banco para evitar erros DDL
     private String inscricao;
 
     @Column(name = "Rua")
@@ -44,10 +33,10 @@ public String toString() {
     @Column(name = "Cidade")
     private String cidade;
 
-    @Column(name = "Estado")
+    @Column(name = "Estado", length = 2)
     private String estado;
 
-    @Column(name = "CEP")
+    @Column(name = "CEP", length = 9)
     private String cep;
     
     @Column(name = "RamoAtividade")
@@ -69,142 +58,73 @@ public String toString() {
     private String observacoes;
     
     @Column(name = "DataCadastro")
-    private String dataCadastro;
+    private LocalDate dataCadastro; // Refatorado para LocalDate
 
-    public Long getId() {
-        return id;
+    // --- CONSTRUTORES (Obrigatórios para o Maven e Camada Service) ---
+    public Fornecedor() {
     }
 
-    public void setId(Long id) {
+    public Fornecedor(Long id, String nomeRazao, String cnpj, LocalDate dataCadastro) {
         this.id = id;
-    }
-
-    public String getNomeRazao() {
-        return nomeRazao;
-    }
-
-    public void setNomeRazao(String nomeRazao) {
         this.nomeRazao = nomeRazao;
-    }
-
-    public String getNomeFantasia() {
-        return nomeFantasia;
-    }
-
-    public void setNomeFantasia(String nomeFantasia) {
-        this.nomeFantasia = nomeFantasia;
-    }
-
-    public String getCnpj() {
-        return cnpj;
-    }
-
-    public void setCnpj(String cnpj) {
         this.cnpj = cnpj;
-    }
-
-    public String getInscricao() {
-        return inscricao;
-    }
-
-    public void setInscricao(String inscricao) {
-        this.inscricao = inscricao;
-    }
-
-    public String getRua() {
-        return rua;
-    }
-
-    public void setRua(String rua) {
-        this.rua = rua;
-    }
-
-    public String getBairro() {
-        return bairro;
-    }
-
-    public void setBairro(String bairro) {
-        this.bairro = bairro;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public String getAtividade() {
-        return atividade;
-    }
-
-    public void setAtividade(String atividade) {
-        this.atividade = atividade;
-    }
-
-    public String getVendedor() {
-        return vendedor;
-    }
-
-    public void setVendedor(String vendedor) {
-        this.vendedor = vendedor;
-    }
-
-    public String getContato() {
-        return contato;
-    }
-
-    public void setContato(String contato) {
-        this.contato = contato;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getDadosBanco() {
-        return dadosBanco;
-    }
-
-    public void setDadosBanco(String dadosBanco) {
-        this.dadosBanco = dadosBanco;
-    }
-
-    public String getObservacoes() {
-        return observacoes;
-    }
-
-    public void setObservacoes(String observacao) {
-        this.observacoes = observacao;
-    }
-
-    public String getDataCadastro() {
-        return dataCadastro;
-    }
-
-    public void setDataCadastro(String dataCadastro) {
         this.dataCadastro = dataCadastro;
     }
-        
+
+    @Override
+    public String toString() {
+        return this.nomeFantasia != null ? this.nomeFantasia : this.nomeRazao; 
+    }
+
+    // --- GETTERS E SETTERS ---
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getNomeRazao() { return nomeRazao; }
+    public void setNomeRazao(String nomeRazao) { this.nomeRazao = nomeRazao; }
+
+    public String getNomeFantasia() { return nomeFantasia; }
+    public void setNomeFantasia(String nomeFantasia) { this.nomeFantasia = nomeFantasia; }
+
+    public String getCnpj() { return cnpj; }
+    public void setCnpj(String cnpj) { this.cnpj = cnpj; }
+
+    public String getInscricao() { return inscricao; }
+    public void setInscricao(String inscricao) { this.inscricao = inscricao; }
+
+    public String getRua() { return rua; }
+    public void setRua(String rua) { this.rua = rua; }
+
+    public String getBairro() { return bairro; }
+    public void setBairro(String bairro) { this.bairro = bairro; }
+
+    public String getCidade() { return cidade; }
+    public void setCidade(String cidade) { this.cidade = cidade; }
+
+    public String getEstado() { return estado; }
+    public void setEstado(String estado) { this.estado = estado; }
+
+    public String getCep() { return cep; }
+    public void setCep(String cep) { this.cep = cep; }
+
+    public String getAtividade() { return atividade; }
+    public void setAtividade(String atividade) { this.atividade = atividade; }
+
+    public String getVendedor() { return vendedor; }
+    public void setVendedor(String vendedor) { this.vendedor = vendedor; }
+
+    public String getContato() { return contato; }
+    public void setContato(String contato) { this.contato = contato; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getDadosBanco() { return dadosBanco; }
+    public void setDadosBanco(String dadosBanco) { this.dadosBanco = dadosBanco; }
+
+    public String getObservacoes() { return observacoes; }
+    public void setObservacoes(String observacoes) { this.observacoes = observacoes; }
+
+    public LocalDate getDataCadastro() { return dataCadastro; }
+    public void setDataCadastro(LocalDate dataCadastro) { this.dataCadastro = dataCadastro; }
 }

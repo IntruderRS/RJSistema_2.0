@@ -1,3 +1,4 @@
+br\com\sistemarj\rjsistema\persistencia\FornecedorDAO.class
 Content\CadastroCategoria$1.class
 Content\CadastroClientes.class
 Content\ListaClientes.class
@@ -6,7 +7,6 @@ Content\CadastroCategoria.class
 Dashboard\MainDashboard$3.class
 Dashboard\MainDashboard$13.class
 Content\ListaClientes$1.class
-Classes\FornecedorDAO.class
 Content\CadastrosFornecedores$2.class
 Content\CadastroProdutos$2.class
 Content\TelaPedidos$2.class
@@ -29,6 +29,7 @@ Classes\Usuario.class
 Content\CadastrosFornecedores$3.class
 Content\TelaHome.class
 Dashboard\MainDashboard$9.class
+Service\FornecedorService.class
 Service\ClienteService.class
 Content\CadastroProdutos.class
 Content\CadastrosFornecedores.class
@@ -52,6 +53,7 @@ Content\CadastroProdutos$1.class
 Content\TelaPedidos.class
 Dashboard\MainDashboard$4.class
 Content\ListaProdutos$1.class
+br\com\sistemarj\rjsistema\persistencia\IFornecedorDAO.class
 br\com\sistemarj\rjsistema\persistencia\JPAUtil.class
 br\com\sistemarj\rjsistema\persistencia\LocalDateConverter.class
 Content\CadastroClientes$3.class

@@ -1,5 +1,6 @@
 package Content;
 
+import br.com.sistemarj.rjsistema.persistencia.FornecedorDAO;
 import Classes.*;
 import java.util.List;
 import javax.swing.JOptionPane;
