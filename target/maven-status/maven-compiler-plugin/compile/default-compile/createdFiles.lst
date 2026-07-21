@@ -15,6 +15,7 @@ Dashboard\MainDashboard$MyForm.class
 Dashboard\MainDashboard$MyForm$1.class
 Content\ListaFornecedores$1.class
 Dashboard\MainDashboard$2.class
+br\com\sistemarj\rjsistema\PrincipalTeste.class
 Content\CadastroClientes$2.class
 Content\ListaFornecedores.class
 Classes\Fornecedor.class
@@ -52,6 +53,7 @@ Content\TelaPedidos.class
 Dashboard\MainDashboard$4.class
 Content\ListaProdutos$1.class
 br\com\sistemarj\rjsistema\persistencia\JPAUtil.class
+br\com\sistemarj\rjsistema\persistencia\LocalDateConverter.class
 Content\CadastroClientes$3.class
 Dashboard\MainDashboard.class
 Content\CadastrosFornecedores$1.class
