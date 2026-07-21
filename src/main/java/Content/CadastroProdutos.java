@@ -1,17 +1,48 @@
 package Content;
 
+import br.com.sistemarj.rjsistema.persistencia.CategoriaDAO;
 import br.com.sistemarj.rjsistema.persistencia.FornecedorDAO;
 import Classes.*;
+import Service.ProdutoService;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.swing.JOptionPane;
 
 public class CadastroProdutos extends javax.swing.JPanel {
 
+    // APLICANDO SOLID: Acionando as regras de negócio de forma isolada
+    private final ProdutoService produtoService = new ProdutoService();
     private Produto produtoAtual;
 
     public CadastroProdutos() {
         initComponents();
         carregarCombos();
+    }
+
+    private void carregarCombos() {
+        try {
+            // Carrega os ComboBoxes através das classes de infraestrutura existentes
+            FornecedorDAO fDAO = new FornecedorDAO();
+            List<Fornecedor> fornecedores = fDAO.listarTodos();
+            cbFornecedor.removeAllItems();
+            for (Fornecedor f : fornecedores) {
+                cbFornecedor.addItem(f);
+            }
+
+            CategoriaDAO cDAO = new CategoriaDAO();
+            List<Categoria> categorias = cDAO.listarTodos();
+            cbCategoria.removeAllItems();
+            for (Categoria c : categorias) {
+                cbCategoria.addItem(c);
+            }
+
+            cbFornecedor.setSelectedIndex(-1);
+            cbCategoria.setSelectedIndex(-1);
+        } catch (Exception e) {
+            System.err.println("Aviso: Falha ao carregar listas de apoio visual na inicialização.");
+        }
     }
 
     private void limparCampos() {
@@ -22,7 +53,6 @@ public class CadastroProdutos extends javax.swing.JPanel {
         cbFornecedor.setSelectedIndex(-1);
         txtCodigoBarras.setText("");
         txtDimensoes.setText("");
-        txtValorCusto.setText("");
         txtLote.setText("");
         txtNCM.setText("");
         txtPeso.setText("");
@@ -31,8 +61,61 @@ public class CadastroProdutos extends javax.swing.JPanel {
         txtValorVenda.setText("");
         txtVencimento.setText("");
         txtObservacao.setText("");
+        produtoAtual = null;
 
-        txtNome.requestFocus(); // Coloca o cursor de volta no primeiro campo
+        txtNome.requestFocus();
+    }
+
+    // Traduz os textos da tela para o objeto de domínio (SRP)
+    private Produto obterProdutoDaTela() {
+        Produto produto = (produtoAtual != null) ? produtoAtual : new Produto();
+
+        if (!txtID.getText().isEmpty()) {
+            produto.setId(Long.parseLong(txtID.getText()));
+        }
+
+        produto.setNome(txtNome.getText());
+
+        if (!txtValorCusto.getText().isEmpty()) {
+            produto.setValorCusto(Double.parseDouble(txtValorCusto.getText().replace(",", ".")));
+        }
+        if (!txtPorcentagemLucro.getText().isEmpty()) {
+            // CORREÇÃO: Utilizando a nomenclatura correta definida no modelo
+            produto.setPorcentagemLucro(Double.parseDouble(txtPorcentagemLucro.getText().replace(",", ".")));
+        }
+        if (!txtValorVenda.getText().isEmpty()) {
+            produto.setValorVenda(Double.parseDouble(txtValorVenda.getText().replace(",", ".")));
+        }
+        if (!txtQuantidade.getText().isEmpty()) {
+            produto.setQuantidade(Integer.parseInt(txtQuantidade.getText()));
+        }
+        if (!txtPeso.getText().isEmpty()) {
+            produto.setPeso(Double.parseDouble(txtPeso.getText().replace(",", ".")));
+        }
+
+        produto.setDimensoes(txtDimensoes.getText());
+        produto.setCodigoBarras(txtCodigoBarras.getText());
+        produto.setLote(txtLote.getText());
+        produto.setNCM(txtNCM.getText());
+        produto.setObservacao(txtObservacao.getText());
+
+        produto.setCategoria((Categoria) cbCategoria.getSelectedItem());
+        produto.setFornecedor((Fornecedor) cbFornecedor.getSelectedItem());
+
+        // REFATORAÇÃO: Tratamento e parsing seguro de String para LocalDate
+        String dataTexto = txtVencimento.getText().trim();
+        if (!dataTexto.isEmpty()) {
+            try {
+                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                produto.setVencimento(LocalDate.parse(dataTexto, formatador));
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Formato da data de vencimento incorreto! Utilize o padrão dd/MM/yyyy.");
+            }
+        } else {
+            produto.setVencimento(null);
+        }
+
+        return produto;
     }
 
     @SuppressWarnings("unchecked")
@@ -290,107 +373,82 @@ public class CadastroProdutos extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-
         try {
-            if (produtoAtual == null) {
-                produtoAtual = new Produto();
-            }
+            Produto produto = obterProdutoDaTela();
 
-            // 1. Conversões (Preparamos os números para o objeto)
-            Double valorCustoLimpo = Double.valueOf(txtValorCusto.getText().replace(",", "."));
-            Double valorVendaLimpo = Double.valueOf(txtValorVenda.getText().replace(",", "."));
-            Double pesoLimpo = Double.valueOf(txtPeso.getText().replace(",", "."));
-            Double lucroLimpo = Double.valueOf(txtPorcentagemLucro.getText().replace(",", "."));
-            Integer qtdLimpa = Integer.valueOf(txtQuantidade.getText());
+            // Lógica de cálculo de margem e gravação delegada para a Camada de Serviço
+            produtoService.salvar(produto);
 
-            //Passa os dados dos campos para o objeto (MUITO IMPORTANTE)
-            produtoAtual.setNome(txtNome.getText());
-            produtoAtual.setCodigoBarras(txtCodigoBarras.getText());
-            produtoAtual.setDimensoes(txtDimensoes.getText());
-            produtoAtual.setValorCusto(valorCustoLimpo);
-            produtoAtual.setLote(txtLote.getText());
-            produtoAtual.setNCM(txtNCM.getText());
-            produtoAtual.setPeso(pesoLimpo);
-            produtoAtual.setPorcetagemLucro(lucroLimpo);
-            produtoAtual.setQuantidade(qtdLimpa);
-            produtoAtual.setValorVenda(valorVendaLimpo);
-            produtoAtual.setVencimento(txtVencimento.getText());
-            produtoAtual.setObservacao(txtObservacao.getText());
-            produtoAtual.setFornecedor((Classes.Fornecedor) cbFornecedor.getSelectedItem());
-            produtoAtual.setCategoria((Classes.Categoria) cbCategoria.getSelectedItem());
-
-            // 5. Salva no Banco de Dados
-            new Classes.ProdutoDAO().salvar(produtoAtual);
-
-            JOptionPane.showMessageDialog(this, "Produto salvo com sucesso!");
+            JOptionPane.showMessageDialog(this, "Produto processado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
             limparCampos();
-
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Alerta de Negócio", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage());
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erro técnico interno ao tentar gravar o registro.", "Erro Crítico", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
-        // 1. Chama o método que limpa os textos dos campos
-        limparCampos();
-
-        // 2. MUITO IMPORTANTE: Reseta a variável de controle
-        // Isso evita que o sistema tente atualizar o ID do cliente anterior
-        this.produtoAtual = null;
-
-        // 3. Opcional: Coloca o foco no primeiro campo
-        txtNome.requestFocus();
+         limparCampos();
     }//GEN-LAST:event_btnLimparActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        Dashboard.MainDashboard.mostrarListaProdutos();
+        String idStr = JOptionPane.showInputDialog(this, "Insira o código identificador (ID) do Produto:");
+        if (idStr != null && !idStr.trim().isEmpty()) {
+            try {
+                Long id = Long.parseLong(idStr.trim());
+                Produto produto = produtoService.buscarPorId(id);
+                prepararEdicao(produto);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "A chave inserida deve possuir apenas caracteres numéricos.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Erro de Consulta", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         carregarCombos();
     }//GEN-LAST:event_formComponentShown
 
-    private void carregarCombos() {
-        // 1. Limpa os combos para não duplicar se o método for chamado de novo
-        cbCategoria.removeAllItems();
-        cbFornecedor.removeAllItems();
-
-        // Busca categorias atualizadas
-        List<Categoria> listaCat = new CategoriaDAO().listarTodos();
-        for (Categoria c : listaCat) {
-            cbCategoria.addItem(c);
-        }
-
-        // Busca fornecedores atualizados
-        List<Fornecedor> listaForn = new FornecedorDAO().listarTodos();
-        for (Fornecedor f : listaForn) {
-            cbFornecedor.addItem(f);
-        }
-
-        // Deixa os campos em branco por padrão (opcional)
-        cbCategoria.setSelectedIndex(-1);
-        cbFornecedor.setSelectedIndex(-1);
-    }
-
+    
     public void prepararEdicao(Classes.Produto p) {
-        this.produtoAtual = p; // Variável da classe
+        if (p == null) {
+            JOptionPane.showMessageDialog(this, "Produto inválido.");
+            limparCampos();
+            return;
+        }
+
+        this.produtoAtual = p;
+
         txtID.setText(String.valueOf(p.getId()));
         txtNome.setText(p.getNome());
-        cbCategoria.setSelectedItem(p.getCategoria());
-        txtCodigoBarras.setText(p.getCodigoBarras());
+        txtValorCusto.setText(p.getValorCusto() != null ? String.valueOf(p.getValorCusto()) : "");
+
+        // CORREÇÃO NOMINAL: getPorcentagemLucro() corrigido
+        txtPorcentagemLucro.setText(p.getPorcentagemLucro() != null ? String.valueOf(p.getPorcentagemLucro()) : "");
+        txtValorVenda.setText(p.getValorVenda() != null ? String.valueOf(p.getValorVenda()) : "");
+        txtQuantidade.setText(p.getQuantidade() != null ? String.valueOf(p.getQuantidade()) : "");
+        txtPeso.setText(p.getPeso() != null ? String.valueOf(p.getPeso()) : "");
+
         txtDimensoes.setText(p.getDimensoes());
-        cbFornecedor.setSelectedItem(p.getFornecedor());
+        txtCodigoBarras.setText(p.getCodigoBarras());
         txtLote.setText(p.getLote());
         txtNCM.setText(p.getNCM());
-        txtPeso.setText(String.valueOf(p.getPeso()));
-        txtPorcentagemLucro.setText(String.valueOf(p.getPorcetagemLucro()));
-        txtQuantidade.setText(String.valueOf(p.getQuantidade()));
-        txtValorCusto.setText(String.valueOf(p.getValorCusto()).replace(".", ","));
-        txtValorVenda.setText(String.valueOf(p.getValorVenda()).replace(".", ","));
-        txtVencimento.setText(p.getVencimento());
         txtObservacao.setText(p.getObservacao());
+
+        // Vincula as seleções de chaves estrangeiras
+        cbCategoria.setSelectedItem(p.getCategoria());
+        cbFornecedor.setSelectedItem(p.getFornecedor());
+
+        // REFATORAÇÃO: Converte LocalDate vindo do banco em String formatada para a UI Swing
+        if (p.getVencimento() != null) {
+            DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            txtVencimento.setText(p.getVencimento().format(formatador));
+        } else {
+            txtVencimento.setText("");
+        }
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

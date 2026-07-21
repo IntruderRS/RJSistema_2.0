@@ -1,6 +1,7 @@
 
-package Classes;
+package br.com.sistemarj.rjsistema.persistencia;
 
+import Classes.Categoria;
 import br.com.sistemarj.rjsistema.persistencia.JPAUtil;
 import jakarta.persistence.EntityManager;
 import java.util.List;

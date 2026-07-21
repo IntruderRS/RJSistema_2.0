@@ -1,7 +1,7 @@
 package Content;
 
 import Classes.Produto;
-import Classes.ProdutoDAO;
+import br.com.sistemarj.rjsistema.persistencia.ProdutoDAO;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -50,7 +50,7 @@ public class ListaProdutos extends javax.swing.JPanel {
                 p.getLote(),
                 p.getNCM(),
                 p.getPeso(),
-                p.getPorcetagemLucro(),
+                p.getPorcentagemLucro(),
                 p.getValorCusto(),
                 p.getObservacao(),
                 });                            

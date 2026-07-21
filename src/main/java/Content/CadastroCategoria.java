@@ -188,7 +188,7 @@ public class CadastroCategoria extends javax.swing.JPanel {
             categoriaAtual.setNome(txtCategoria.getText());
 
             // 4. Chama o DAO para salvar
-            Classes.CategoriaDAO dao = new Classes.CategoriaDAO();
+            br.com.sistemarj.rjsistema.persistencia.CategoriaDAO dao = new br.com.sistemarj.rjsistema.persistencia.CategoriaDAO();
             dao.salvar(categoriaAtual);
 
             JOptionPane.showMessageDialog(this, "Categoria salva com sucesso!");
@@ -229,7 +229,7 @@ public class CadastroCategoria extends javax.swing.JPanel {
             Long id = Long.valueOf(tblCategorias.getValueAt(linha, 0).toString());
 
             // 3. Buscar a categoria completa no banco para garantir os dados
-            Classes.CategoriaDAO dao = new Classes.CategoriaDAO();
+            br.com.sistemarj.rjsistema.persistencia.CategoriaDAO dao = new br.com.sistemarj.rjsistema.persistencia.CategoriaDAO();
             Classes.Categoria selecionada = dao.buscarPorId(id);
 
             if (selecionada != null) {
@@ -243,7 +243,7 @@ public class CadastroCategoria extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tblCategorias.getModel();
         modelo.setNumRows(0); // Limpa para não duplicar
 
-        Classes.CategoriaDAO dao = new Classes.CategoriaDAO();
+        br.com.sistemarj.rjsistema.persistencia.CategoriaDAO dao = new br.com.sistemarj.rjsistema.persistencia.CategoriaDAO();
         List<Classes.Categoria> lista = dao.listarTodos();
 
         for (Classes.Categoria c : lista) {

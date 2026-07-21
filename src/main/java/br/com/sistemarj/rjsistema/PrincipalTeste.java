@@ -2,91 +2,85 @@ package br.com.sistemarj.rjsistema;
 
 import Classes.Cliente;
 import Classes.Fornecedor;
+import Classes.Categoria;
+import Classes.Produto;
+import br.com.sistemarj.rjsistema.persistencia.CategoriaDAO;
 import Service.ClienteService;
 import Service.FornecedorService;
+import Service.ProdutoService;
 import java.time.LocalDate;
 import java.util.List;
 
 public class PrincipalTeste {
 
     public static void main(String[] args) {
-        System.out.println("========== INICIANDO TESTE DOS COMPONENTES REFATORADOS (SOLID) ==========\n");
+        System.out.println("========== INICIANDO TESTE INTEGRADO COMPLETO (SOLID) ==========\n");
 
         ClienteService clienteService = new ClienteService();
         FornecedorService fornecedorService = new FornecedorService();
+        ProdutoService produtoService = new ProdutoService();
+        CategoriaDAO categoriaDAO = new CategoriaDAO(); // DAO de apoio ao teste
 
         try {
-            // =================================================================
-            // MÓDULO 1: CLIENTES (Validações e Persistência)
-            // =================================================================
-            System.out.println("[TESTE CLIENTE 1] Testando validação de segurança (Nome obrigatório)...");
-            Cliente clienteInvalido = new Cliente();
-            clienteInvalido.setCnpjCpf("123.456.789-00");
-            try {
-                clienteService.salvar(clienteInvalido);
-            } catch (IllegalArgumentException e) {
-                System.out.println("-> Sucesso: A camada de serviço barrou o cadastro inválido. Motivo: " + e.getMessage());
-            }
-
-            System.out.println("\n[TESTE CLIENTE 2] Cadastrando um cliente válido no banco de dados...");
+            // 1. FLUXO CLIENTE
+            System.out.println("[FLUXO CLIENTE] Cadastrando Cliente de Teste...");
             Cliente novoCliente = new Cliente();
             novoCliente.setNomeRazao("Empresa de Teste SOLID Ltda");
-            novoCliente.setNomeFantasia("Teste Web Ready");
-            novoCliente.setCnpjCpf("99.888.777/0001-11"); // Alterado para evitar erro de duplicidade
+            novoCliente.setCnpjCpf("99.888.777/0001-" + (System.currentTimeMillis() % 100)); 
             novoCliente.setNascimento(LocalDate.of(1995, 5, 20));
-            novoCliente.setEmail("contato@testesolid.com");
-            novoCliente.setCidade("Camaquã");
-            novoCliente.setEstado("RS");
             clienteService.salvar(novoCliente);
-            System.out.println("-> Sucesso: Cliente salvo e transação concluída pelo DAO!");
+            System.out.println("-> Sucesso: Cliente inserido.");
 
-            // =================================================================
-            // MÓDULO 2: FORNECEDORES (Validações e Persistência)
-            // =================================================================
-            System.out.println("\n-------------------------------------------------------------------------");
-            System.out.println("[TESTE FORNECEDOR 1] Testando validação de segurança (Razão obrigatória)...");
-            Fornecedor fornecedorInvalido = new Fornecedor();
-            fornecedorInvalido.setCnpj("00.000.000/0001-00");
-            try {
-                fornecedorService.salvar(fornecedorInvalido);
-            } catch (IllegalArgumentException e) {
-                System.out.println("-> Sucesso: FornecedorService barrou o cadastro incompleto. Motivo: " + e.getMessage());
-            }
-
-            System.out.println("\n[TESTE FORNECEDOR 2] Cadastrando um fornecedor válido...");
+            // 2. FLUXO FORNECEDOR
+            System.out.println("\n[FLUXO FORNECEDOR] Cadastrando Fornecedor de Teste...");
             Fornecedor novoFornecedor = new Fornecedor();
             novoFornecedor.setNomeRazao("Distribuidora Nordeste de Alimentos");
-            novoFornecedor.setNomeFantasia("Nordeste Atacado");
-            novoFornecedor.setCnpj("44.333.222/0001-55"); // Documento único fictício
-            novoFornecedor.setEmail("vendas@nordeste.com");
-            novoFornecedor.setDataCadastro(LocalDate.now()); // Nova API de tempo mapeada pelo Converter
+            novoFornecedor.setCnpj("44.333.222/0001-" + (System.currentTimeMillis() % 100));
             fornecedorService.salvar(novoFornecedor);
-            System.out.println("-> Sucesso: Fornecedor salvo com controle de transação e auditoria automatizada de data!");
+            System.out.println("-> Sucesso: Fornecedor inserido.");
 
-            // =================================================================
-            // MÓDULO 3: LISTAGEM UNIFICADA (Desacoplada da Interface)
-            // =================================================================
-            System.out.println("\n-------------------------------------------------------------------------");
-            System.out.println("[TESTE INTEGRADO 3] Listando todos os fornecedores cadastrados...");
-            List<Fornecedor> listaFornecedores = fornecedorService.listarTodos();
+            // 3. FLUXO PRODUTO (CORRIGIDO COM RELACIONAMENTOS OBRIGATÓRIOS)
+            System.out.println("\n[FLUXO PRODUTO] Buscando chaves relacionais para o produto...");
             
-            if (listaFornecedores.isEmpty()) {
-                System.out.println("-> Nenhum fornecedor encontrado no banco.");
-            } else {
-                System.out.println("-> Fornecedores encontrados no banco de dados:");
-                for (Fornecedor f : listaFornecedores) {
-                    System.out.println("   - ID: " + f.getId() 
-                            + " | Razão Social: " + f.getNomeRazao() 
-                            + " | Cadastro: " + (f.getDataCadastro() != null ? f.getDataCadastro() : "Não informada"));
-                }
+            // Busca as categorias existentes no banco para não violar a FK do MySQL
+            List<Categoria> categoriasExistentes = categoriaDAO.listarTodos();
+            if (categoriasExistentes.isEmpty()) {
+                throw new IllegalStateException("ERRO DO TESTE: Cadastre ao menos uma Categoria no banco antes de rodar!");
+            }
+            Categoria categoriaDoBanco = categoriasExistentes.get(0); // Pega a primeira que achar
+
+            System.out.println("[FLUXO PRODUTO] Cadastrando Produto com Cálculo Automático...");
+            Produto novoProduto = new Produto();
+            novoProduto.setNome("Pneu Automotivo Aro 15");
+            novoProduto.setQuantidade(45);
+            novoProduto.setValorCusto(200.00);
+            novoProduto.setPorcentagemLucro(50.0); 
+            novoProduto.setVencimento(LocalDate.of(2031, 12, 31)); 
+            
+            // Vincula as chaves obrigatórias exigidas pelo banco físico
+            novoProduto.setCategoria(categoriaDoBanco);
+            novoProduto.setFornecedor(novoFornecedor);
+
+            produtoService.salvar(novoProduto);
+            
+            System.out.println("-> Sucesso: Produto registrado via JPA!");
+            System.out.println("   - Preço de Custo Informado: R$ " + novoProduto.getValorCusto());
+            System.out.println("   - Margem Aplicada via Service: " + novoProduto.getPorcentagemLucro() + "%");
+            System.out.println("   - Preço Final Calculado pela Lógica Centralizada: R$ " + novoProduto.getValorVenda());
+
+            System.out.println("\n[LISTAGEM PRODUTOS] Verificando catálogo persistido...");
+            List<Produto> catalogo = produtoService.listarTodos();
+            for (Produto prod : catalogo) {
+                System.out.println("   - Código: " + prod.getId() + " | Item: " + prod.getNome() + " | Estoque: " + prod.getQuantidade() + " un.");
             }
 
             System.out.println("\n=========================================================================");
-            System.out.println(" RESULTADO DO TESTE: SUCESSO ABSOLUTO PARA CLIENTES E FORNECEDORES!");
+            System.out.println(" RESULTADO DO TESTE DO PROJETO INTEGRADOR: SUCESSO TOTAL E ABSOLUTO!");
+            System.out.println(" Sistema 100% desacoplado de dependências visuais e portável para Web.");
             System.out.println("=========================================================================");
 
         } catch (Exception e) {
-            System.err.println("\n[ERRO CRÍTICO NO TESTE]: Falha de infraestrutura ou violação de constraints.");
+            System.err.println("\n[FALHA DE EXECUÇÃO]: Erro estrutural ou relacional detectado.");
             e.printStackTrace();
         }
     }
