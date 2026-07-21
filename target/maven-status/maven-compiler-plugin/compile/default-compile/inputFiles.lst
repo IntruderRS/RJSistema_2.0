@@ -1,6 +1,7 @@
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\CategoriaDAO.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\ClienteDAO.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\FornecedorDAO.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\ICategoriaDAO.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\IClienteDAO.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\IFornecedorDAO.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\IProdutoDAO.java
@@ -29,6 +30,7 @@ D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\ja
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\TelaPedidos.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\Usuarios.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Dashboard\MainDashboard.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\CategoriaService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\ClienteService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\FornecedorService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\ProdutoService.java

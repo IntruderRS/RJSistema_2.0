@@ -1,49 +1,67 @@
-
 package br.com.sistemarj.rjsistema.persistencia;
 
 import Classes.Categoria;
-import br.com.sistemarj.rjsistema.persistencia.JPAUtil;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceException;
 import java.util.List;
 
-public class CategoriaDAO {
+public class CategoriaDAO implements ICategoriaDAO {
 
+    @Override
     public void salvar(Categoria categoria) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            // Se o ID for nulo, salva (persist), se já existir, atualiza (merge)
-            if (categoria.getNome() == null) {
-                em.persist(categoria);
-            } else {
-                em.merge(categoria);
-            }
+            em.persist(categoria);
             em.getTransaction().commit();
         } catch (Exception e) {
-            em.getTransaction().rollback();
-            throw e;
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw new PersistenceException("Erro ao salvar categoria: " + e.getMessage(), e);
         } finally {
             em.close();
         }
     }
 
-    public List<Categoria> listarTodos() {
-        EntityManager em = JPAUtil.getEntityManager();
-        try {
-            // "Categoria" é o nome da CLASSE
-            return em.createQuery("FROM Categoria", Categoria.class).getResultList();
-        } finally {
-            em.close();
-        }
-    }
-
+    @Override
     public Categoria buscarPorId(Long id) {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             return em.find(Categoria.class, id);
+        } catch (Exception e) {
+            throw new PersistenceException("Erro ao buscar categoria pelo ID: " + id, e);
         } finally {
             em.close();
         }
     }
-    
+
+    @Override
+    public List<Categoria> listarTodos() {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            return em.createQuery("FROM Categoria", Categoria.class).getResultList();
+        } catch (Exception e) {
+            throw new PersistenceException("Erro ao listar categorias.", e);
+        } finally {
+            em.close();
+        }
+    }
+
+    @Override
+    public void atualizar(Categoria categoria) {
+        EntityManager em = JPAUtil.getEntityManager();
+        try {
+            em.getTransaction().begin();
+            em.merge(categoria);
+            em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw new PersistenceException("Erro ao atualizar categoria: " + e.getMessage(), e);
+        } finally {
+            em.close();
+        }
+    }
 }

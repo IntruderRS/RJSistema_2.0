@@ -12,6 +12,7 @@ Content\ListaClientes$1.class
 Content\CadastrosFornecedores$2.class
 Content\CadastroProdutos$2.class
 Content\TelaPedidos$2.class
+Service\CategoriaService.class
 Dashboard\MainDashboard$14.class
 Dashboard\MainDashboard$MyForm.class
 Dashboard\MainDashboard$MyForm$1.class
@@ -68,4 +69,5 @@ Dashboard\MainDashboard$1.class
 Classes\Produto.class
 Classes\Cliente.class
 Content\CadastroCategoria$2.class
+br\com\sistemarj\rjsistema\persistencia\ICategoriaDAO.class
 Content\ListaPedidos.class
