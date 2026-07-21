@@ -1,7 +1,7 @@
 package Content;
 
 import Classes.Cliente;
-import Classes.ClienteDAO;
+import br.com.sistemarj.rjsistema.persistencia.ClienteDAO;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
 import javax.swing.JOptionPane;

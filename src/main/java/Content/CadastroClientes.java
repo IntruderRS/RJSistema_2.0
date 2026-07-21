@@ -1,15 +1,22 @@
 package Content;
 
-import Classes.*;
+import Classes.Cliente;
+import Service.ClienteService;
 import javax.swing.JOptionPane;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 
 public class CadastroClientes extends javax.swing.JPanel {
 
+    // Gerencia as regras e segurança de dados de maneira isolada do Swing
+    private final ClienteService clienteService = new ClienteService();
+
+    // Armazena a referência caso estejamos editando um cliente existente
     private Cliente clienteAtual;
 
     public CadastroClientes() {
         initComponents();
-
     }
 
     private void limparCampos() {
@@ -28,8 +35,9 @@ public class CadastroClientes extends javax.swing.JPanel {
         txtWhatsapp.setText("");
         txtEmail.setText("");
         txtObservacao.setText("");
+        clienteAtual = null; // Reseta o estado do cliente em edição
 
-        txtRazaoSocialNome.requestFocus(); // Coloca o cursor de volta no primeiro campo
+        txtRazaoSocialNome.requestFocus();
     }
 
     @SuppressWarnings("unchecked")
@@ -292,89 +300,152 @@ public class CadastroClientes extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+    // Converte os dados visuais textuais em um objeto de domínio tipado
+    private Cliente obterClienteDaTela() {
+        Cliente cliente = (clienteAtual != null) ? clienteAtual : new Cliente();
 
-        // 1. Se não estamos editando, criamos um novo. Se estamos, usamos o atual.
-        if (clienteAtual == null) {
-            clienteAtual = new Cliente();
+        if (!txtID.getText().isEmpty()) {
+            cliente.setId(Long.parseLong(txtID.getText()));
         }
 
-        // 2. Passa os dados dos campos para o objeto (MUITO IMPORTANTE)
-        clienteAtual.setNomeRazao(txtID.getText());
-        clienteAtual.setNomeRazao(txtRazaoSocialNome.getText());
-        clienteAtual.setNomeFantasia(txtNomeFantasia.getText());
-        clienteAtual.setCnpjCpf(txtCNPJCPF.getText());
-        clienteAtual.setNascimento(txtNascimento.getText());
-        clienteAtual.setProfissao(txtAtividadeProfissão.getText());
-        clienteAtual.setRua(txtRua.getText());
-        clienteAtual.setBairro(txtBairro.getText());
-        clienteAtual.setCidade(txtCidade.getText());
-        clienteAtual.setEstado(txtEstado.getText());
-        clienteAtual.setCep(txtCEP.getText());
-        clienteAtual.setTelefone(txtTelefoneContato.getText());
-        clienteAtual.setWhatsapp(txtWhatsapp.getText());
-        clienteAtual.setEmail(txtEmail.getText());
-        clienteAtual.setObservacao(txtObservacao.getText());
+        cliente.setNomeRazao(txtRazaoSocialNome.getText());
+        cliente.setNomeFantasia(txtNomeFantasia.getText());
+        cliente.setCnpjCpf(txtCNPJCPF.getText());
 
-        // 3. Salva ou Atualiza
-        ClienteDAO dao = new ClienteDAO();
-        try {
-            if (clienteAtual.getId() == null) {
-                dao.salvar(clienteAtual); // Usa persist
-                JOptionPane.showMessageDialog(this, "Cadastrado com sucesso!");
-            } else {
-                dao.atualizar(clienteAtual); // Usa merge
-                JOptionPane.showMessageDialog(this, "Alterado com sucesso!");
+        // CORREÇÃO: Conversão robusta e segura de String da tela para LocalDate do Modelo
+        String dataTexto = txtNascimento.getText().trim();
+        if (!dataTexto.isEmpty()) {
+            try {
+                DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                LocalDate dataConvertida = LocalDate.parse(dataTexto, formatador);
+                cliente.setNascimento(dataConvertida);
+            } catch (DateTimeParseException e) {
+                throw new IllegalArgumentException("Formato de data de nascimento inválido! Use dd/MM/yyyy.");
             }
+        } else {
+            cliente.setNascimento(null);
+        }
 
+        cliente.setProfissao(txtAtividadeProfissão.getText());
+        cliente.setRua(txtRua.getText());
+        cliente.setBairro(txtBairro.getText());
+        cliente.setCidade(txtCidade.getText());
+        cliente.setEstado(txtEstado.getText());
+        cliente.setCep(txtCEP.getText());
+        cliente.setTelefone(txtTelefoneContato.getText());
+        cliente.setWhatsapp(txtWhatsapp.getText());
+        cliente.setEmail(txtEmail.getText());
+        cliente.setObservacao(txtObservacao.getText());
+
+        return cliente;
+    }
+
+    // Alimenta os componentes visuais com as informações puras de negócio do Modelo
+    private void preencherTela(Cliente cliente) {
+        if (cliente == null) {
+            JOptionPane.showMessageDialog(this, "Cliente não encontrado.");
             limparCampos();
-            clienteAtual = null; // Reseta para o próximo não vir como edição
+            return;
+        }
 
+        this.clienteAtual = cliente; // Guarda a referência de quem foi buscado
+
+        txtID.setText(String.valueOf(cliente.getId()));
+        txtRazaoSocialNome.setText(cliente.getNomeRazao());
+        txtNomeFantasia.setText(cliente.getNomeFantasia());
+        txtCNPJCPF.setText(cliente.getCnpjCpf());
+
+        // CORREÇÃO: Traduz de volta o LocalDate do Banco em String formatada BR para a Interface
+        if (cliente.getNascimento() != null) {
+            DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            txtNascimento.setText(cliente.getNascimento().format(formatador));
+        } else {
+            txtNascimento.setText("");
+        }
+
+        txtAtividadeProfissão.setText(cliente.getProfissao());
+        txtRua.setText(cliente.getRua());
+        txtBairro.setText(cliente.getBairro());
+        txtCidade.setText(cliente.getCidade());
+        txtEstado.setText(cliente.getEstado());
+        txtCEP.setText(cliente.getCep());
+        txtTelefoneContato.setText(cliente.getTelefone());
+        txtWhatsapp.setText(cliente.getWhatsapp());
+        txtEmail.setText(cliente.getEmail());
+        txtObservacao.setText(cliente.getObservacao());
+    }
+
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        try {
+            Cliente cliente = obterClienteDaTela();
+
+            // O Service decide se executa um insert (salvar) ou update (atualizar) de forma invisível para a UI
+            clienteService.salvar(cliente);
+
+            JOptionPane.showMessageDialog(this, "Cliente processado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+            limparCampos();
+        } catch (IllegalArgumentException e) {
+            // Intercepta e expõe erros de validação de negócios amigavelmente
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro de Validação", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao salvar: " + e.getMessage());
+            JOptionPane.showMessageDialog(this, "Erro interno de sistema ao persistir dados.", "Erro Crítico", JOptionPane.ERROR_MESSAGE);
         }
 
     }//GEN-LAST:event_btnSalvarActionPerformed
 
     private void btnBuscarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarActionPerformed
-        Dashboard.MainDashboard.mostrarListaClientes();
+        String idStr = JOptionPane.showInputDialog(this, "Insira o ID de pesquisa do Cliente:");
+        if (idStr != null && !idStr.trim().isEmpty()) {
+            try {
+                Long id = Long.parseLong(idStr.trim());
+                Cliente cliente = clienteService.buscarPorId(id);
+                preencherTela(cliente);
+            } catch (NumberFormatException e) {
+                JOptionPane.showMessageDialog(this, "O ID fornecido deve ser exclusivamente numérico.");
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Erro de Busca", JOptionPane.ERROR_MESSAGE);
+            }
+        }
     }//GEN-LAST:event_btnBuscarActionPerformed
 
     private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
         // 1. Chama o método que limpa os textos dos campos
         limparCampos();
-
-        // 2. MUITO IMPORTANTE: Reseta a variável de controle
-        // Isso evita que o sistema tente atualizar o ID do cliente anterior
-        this.clienteAtual = null;
-
-        // 3. Opcional: Coloca o foco no primeiro campo
-        txtRazaoSocialNome.requestFocus();
-
-        // Feedback visual (opcional)
-        // System.out.println("Formulário resetado para novo cadastro.");
     }//GEN-LAST:event_btnLimparActionPerformed
 
-    public void prepararEdicao(Cliente c) {
-        this.clienteAtual = c; // Guarda o cliente que veio da lista
+    public void preparaEdicao(Cliente c) {
+        if (c == null) {
+            return;
+        }
 
-        // Preenche os campos da tela
+        // Vincula o cliente que veio da tabela/busca ao cliente atual da tela
+        this.clienteAtual = c;
+
         txtID.setText(String.valueOf(c.getId()));
         txtRazaoSocialNome.setText(c.getNomeRazao());
-        txtEmail.setText(c.getEmail());
+        txtNomeFantasia.setText(c.getNomeFantasia());
         txtCNPJCPF.setText(c.getCnpjCpf());
+
+        // CORREÇÃO DA LINHA 429: Converte o LocalDate para String antes de colocar no txtNascimento
+        if (c.getNascimento() != null) {
+            DateTimeFormatter formatador = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            String dataFormatada = c.getNascimento().format(formatador);
+            txtNascimento.setText(dataFormatada);
+        } else {
+            txtNascimento.setText("");
+        }
+
+        // Atualize também os demais campos caso usem nomes antigos:
         txtAtividadeProfissão.setText(c.getProfissao());
-        txtCEP.setText(c.getCep());
+        txtRua.setText(c.getRua());
+        txtBairro.setText(c.getBairro());
         txtCidade.setText(c.getCidade());
         txtEstado.setText(c.getEstado());
-        txtNascimento.setText(c.getNascimento());
-        txtWhatsapp.setText(c.getWhatsapp());
+        txtCEP.setText(c.getCep());
         txtTelefoneContato.setText(c.getTelefone());
-        txtRua.setText(c.getRua());
-        txtNomeFantasia.setText(c.getNomeFantasia());
-        txtBairro.setText(c.getBairro());
+        txtWhatsapp.setText(c.getWhatsapp());
+        txtEmail.setText(c.getEmail());
         txtObservacao.setText(c.getObservacao());
-
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

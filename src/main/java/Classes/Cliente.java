@@ -1,28 +1,28 @@
 package Classes;
 
-import jakarta.persistence.Entity;
 import jakarta.persistence.*;
+import java.time.LocalDate;
 
-    @Entity
-    @Table(name = "cliente") // Nome exato da tabela no banco
-    public class Cliente {
+@Entity
+@Table(name = "cliente")
+public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "Id_Cliente")
     private Long id;
 
-    @Column(name = "NomeRazao")
+    @Column(name = "NomeRazao", nullable = false)
     private String nomeRazao;
 
     @Column(name = "NomeFantasia")
     private String nomeFantasia;
 
-    @Column(name = "CNPJ_CPF")
+    @Column(name = "CNPJ_CPF", nullable = false, length = 18)
     private String cnpjCpf;
 
     @Column(name = "Nascimento")
-    private String nascimento; // Se no banco for Date, use Date e @Temporal(TemporalType.DATE)
+    private LocalDate nascimento;
 
     @Column(name = "ProfissaoAtividade")
     private String profissao;
@@ -36,10 +36,10 @@ import jakarta.persistence.*;
     @Column(name = "Cidade")
     private String cidade;
 
-    @Column(name = "Estado")
+    @Column(name = "Estado", length = 2)
     private String estado;
 
-    @Column(name = "CEP")
+    @Column(name = "CEP", length = 9)
     private String cep;
 
     @Column(name = "Telefone")
@@ -53,6 +53,18 @@ import jakarta.persistence.*;
 
     @Column(name = "observacao", columnDefinition = "TEXT")
     private String observacao;
+    
+     public Cliente() {
+    }
+
+    // Construtor completo para facilitar instanciação rápida
+    public Cliente(Long id, String nomeRazao, String cnpjCpf, LocalDate nascimento, String email) {
+        this.id = id;
+        this.nomeRazao = nomeRazao;
+        this.cnpjCpf = cnpjCpf;
+        this.nascimento = nascimento;
+        this.email = email;
+    }
 
     public Long getId() {
         return id;
@@ -86,11 +98,11 @@ import jakarta.persistence.*;
         this.cnpjCpf = cnpjCpf;
     }
 
-    public String getNascimento() {
+    public LocalDate getNascimento() {
         return nascimento;
     }
 
-    public void setNascimento(String nascimento) {
+    public void setNascimento(LocalDate nascimento) {
         this.nascimento = nascimento;
     }
 
@@ -117,12 +129,6 @@ import jakarta.persistence.*;
     public void setBairro(String bairro) {
         this.bairro = bairro;
     }
-
-    public String getObservacao() { 
-        return observacao; 
-    }
-
-    public void setObservacao(String observacao) { this.observacao = observacao; }
 
     public String getCidade() {
         return cidade;
@@ -170,5 +176,13 @@ import jakarta.persistence.*;
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getObservacao() {
+        return observacao;
+    }
+
+    public void setObservacao(String observacao) {
+        this.observacao = observacao;
     }
 }

@@ -1,26 +1,28 @@
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\br\com\sistemarj\rjsistema\persistencia\JPAUtil.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\br\com\sistemarj\rjsistema\RJSistema.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\Backup.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\Categoria.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\CategoriaDAO.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\Cliente.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\ClienteDAO.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\Fornecedor.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\FornecedorDAO.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\Pedido.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\Produto.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\ProdutoDAO.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Classes\Usuario.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\CadastroCategoria.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\CadastroClientes.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\CadastroProdutos.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\CadastrosFornecedores.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\ListaClientes.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\ListaFornecedores.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\ListaPedidos.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\ListaProdutos.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\Permissoes.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\TelaHome.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\TelaPedidos.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Content\Usuarios.java
-D:\Documents\NetBeansProjects\RJSistema\src\main\java\Dashboard\MainDashboard.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\ClienteDAO.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\IClienteDAO.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\persistencia\JPAUtil.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\br\com\sistemarj\rjsistema\RJSistema.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Backup.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Categoria.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\CategoriaDAO.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Cliente.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Fornecedor.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\FornecedorDAO.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Pedido.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Produto.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\ProdutoDAO.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Usuario.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastroCategoria.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastroClientes.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastroProdutos.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastrosFornecedores.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\ListaClientes.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\ListaFornecedores.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\ListaPedidos.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\ListaProdutos.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\Permissoes.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\TelaHome.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\TelaPedidos.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\Usuarios.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Dashboard\MainDashboard.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\ClienteService.java

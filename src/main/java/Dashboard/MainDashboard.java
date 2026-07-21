@@ -448,17 +448,16 @@ public class MainDashboard extends javax.swing.JFrame {
         telaLista.atualizarTabela();
     }
 
-// Crie este método para ser chamado pela Lista
+// Método para ser chamado pela Lista
     public static void exibirEdicao(Classes.Cliente cliente) {
         // 1. Esconde todas as outras (ou chama seu método de limpar tela)
         // Ex: esconderTodas(); 
 
         // 2. Preenche os dados na tela que já existe
-        telaCadastro.prepararEdicao(cliente);
+        telaCadastro.preparaEdicao(cliente);
 
         // 3. Mostra apenas ela
         telaCadastro.setVisible(true);
-
     }
 
     public static void mostrarListaFornecedores() {

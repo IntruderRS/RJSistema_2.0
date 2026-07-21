@@ -20,6 +20,7 @@ Content\ListaFornecedores.class
 Classes\Fornecedor.class
 Content\Permissoes.class
 Content\Usuarios.class
+br\com\sistemarj\rjsistema\persistencia\ClienteDAO.class
 Dashboard\MainDashboard$6.class
 Content\CadastroProdutos$3.class
 Dashboard\MainDashboard$10.class
@@ -27,8 +28,10 @@ Classes\Usuario.class
 Content\CadastrosFornecedores$3.class
 Content\TelaHome.class
 Dashboard\MainDashboard$9.class
+Service\ClienteService.class
 Content\CadastroProdutos.class
 Content\CadastrosFornecedores.class
+br\com\sistemarj\rjsistema\persistencia\IClienteDAO.class
 Content\TelaPedidos$1.class
 Content\CadastroCategoria$3.class
 Content\ListaProdutos$2.class
@@ -44,7 +47,6 @@ Dashboard\MainDashboard$5.class
 Classes\Backup.class
 br\com\sistemarj\rjsistema\classes\Pedido.class
 Classes\CategoriaDAO.class
-Classes\ClienteDAO.class
 Content\CadastroProdutos$1.class
 Content\TelaPedidos.class
 Dashboard\MainDashboard$4.class
