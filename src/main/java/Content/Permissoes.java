@@ -1,9 +1,28 @@
 package Content;
 
+import Classes.Permissao;
+import Service.PermissaoService;
+import javax.swing.JOptionPane;
+
 public class Permissoes extends javax.swing.JPanel {
+
+    private final PermissaoService permissaoService = new PermissaoService();
+    private Permissao permissaoAtual;
 
     public Permissoes() {
         initComponents();
+         btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
+    }
+
+    private void limparCampos() {
+        txtID.setText("");
+        txtCategoria.setText("");
+        permissaoAtual = null;
+        txtCategoria.requestFocus();
     }
 
     @SuppressWarnings("unchecked")
@@ -16,9 +35,9 @@ public class Permissoes extends javax.swing.JPanel {
         jLabel4 = new javax.swing.JLabel();
         txtCategoria = new javax.swing.JTextField();
         jPanel1 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnPesquisar = new javax.swing.JButton();
+        btnLimpar = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
 
         setForeground(new java.awt.Color(205, 205, 205));
 
@@ -30,11 +49,26 @@ public class Permissoes extends javax.swing.JPanel {
 
         jLabel4.setText("Categoria:");
 
-        jButton3.setText("Pesquisar");
+        btnPesquisar.setText("Pesquisar");
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Limpar");
+        btnLimpar.setText("Limpar");
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("Salvar");
+        btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -42,11 +76,11 @@ public class Permissoes extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(79, 79, 79)
-                .addComponent(jButton3)
+                .addComponent(btnPesquisar)
                 .addGap(125, 125, 125)
-                .addComponent(jButton2)
+                .addComponent(btnLimpar)
                 .addGap(117, 117, 117)
-                .addComponent(jButton1)
+                .addComponent(btnSalvar)
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -54,9 +88,9 @@ public class Permissoes extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnSalvar)
+                    .addComponent(btnLimpar)
+                    .addComponent(btnPesquisar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -103,11 +137,60 @@ public class Permissoes extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        try {
+            if (permissaoAtual == null) {
+                permissaoAtual = new Permissao();
+            }
+            permissaoAtual.setNome(txtCategoria.getText().trim().toUpperCase());
+            permissaoAtual.setDescricao("Grupo de acesso visual " + txtCategoria.getText());
+
+            permissaoService.salvar(permissaoAtual);
+            JOptionPane.showMessageDialog(this, "Permissão gravada com sucesso!");
+            limparCampos();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Erro", JOptionPane.WARNING_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        limparCampos();
+    }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        java.awt.Window janelaPai = javax.swing.SwingUtilities.getWindowAncestor(this);
+    javax.swing.JDialog janelaModal = new javax.swing.JDialog(janelaPai, "Pesquisa de Grupos de Permissões", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+    
+    JanelaPesquisaRapida painelBusca = new JanelaPesquisaRapida();
+    painelBusca.inicializarPesquisa("PERMISSAO");
+    
+    janelaModal.add(painelBusca);
+    janelaModal.pack();
+    janelaModal.setLocationRelativeTo(janelaPai);
+    janelaModal.setAlwaysOnTop(true);
+    
+    painelBusca.addComponentListener(new java.awt.event.ComponentAdapter() {
+        @Override
+        public void componentHidden(java.awt.event.ComponentEvent e) {
+            janelaModal.dispose();
+        }
+    });
+    
+    janelaModal.setVisible(true);
+
+    Classes.Permissao permissaoEscolhida = (Classes.Permissao) painelBusca.getObjetoSelecionado();
+    if (permissaoEscolhida != null) {
+        this.permissaoAtual = permissaoEscolhida;
+        txtID.setText(String.valueOf(permissaoEscolhida.getId()));
+        txtCategoria.setText(permissaoEscolhida.getNome());
+    }
+    }//GEN-LAST:event_btnPesquisarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
+    private javax.swing.JButton btnLimpar;
+    private javax.swing.JButton btnPesquisar;
+    private javax.swing.JButton btnSalvar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel4;

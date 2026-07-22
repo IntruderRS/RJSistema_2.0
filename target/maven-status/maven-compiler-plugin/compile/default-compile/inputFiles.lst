@@ -16,12 +16,14 @@ D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\ja
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Fornecedor.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\ItemPedido.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Pedido.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Permissao.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Produto.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Usuario.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastroCategoria.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastroClientes.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastroProdutos.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\CadastrosFornecedores.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\JanelaPesquisaRapida.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\ListaClientes.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\ListaFornecedores.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Content\ListaPedidos.java
@@ -35,4 +37,6 @@ D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\ja
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\ClienteService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\FornecedorService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\PedidoService.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\PermissaoService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\ProdutoService.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\UsuarioService.java

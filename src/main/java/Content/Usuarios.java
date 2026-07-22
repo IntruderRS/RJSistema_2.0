@@ -1,9 +1,39 @@
 package Content;
 
+import Classes.Usuario;
+import Classes.Permissao;
+import Service.UsuarioService;
+import javax.swing.JOptionPane;
+
 public class Usuarios extends javax.swing.JPanel {
+
+    private final UsuarioService usuarioService = new UsuarioService();
+    private Usuario usuarioAtual;
 
     public Usuarios() {
         initComponents();
+       btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
+    }
+
+    private void limparCampos() {
+        txtID.setText("");
+        txtCategoria.setText("");
+        txtLogin.setText("");
+        txtSenha.setText("");
+        txtSenhaRepetida.setText("");
+        jComboBox1.setSelectedIndex(-1);
+
+        chkCadastros.setSelected(false);
+        chkRelatorios.setSelected(false);
+        chkPedidos.setSelected(false);
+        chkUsuarios.setSelected(false);
+
+        usuarioAtual = null;
+        txtCategoria.requestFocus();
     }
 
     @SuppressWarnings("unchecked")
@@ -29,9 +59,9 @@ public class Usuarios extends javax.swing.JPanel {
         chkPedidos = new javax.swing.JCheckBox();
         chkUsuarios = new javax.swing.JCheckBox();
         jPanel1 = new javax.swing.JPanel();
-        jButton3 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton1 = new javax.swing.JButton();
+        btnPesquisar = new javax.swing.JButton();
+        btnLimpar = new javax.swing.JButton();
+        btnSalvar = new javax.swing.JButton();
 
         setForeground(new java.awt.Color(205, 205, 205));
 
@@ -63,11 +93,26 @@ public class Usuarios extends javax.swing.JPanel {
 
         chkUsuarios.setText("Usuarios");
 
-        jButton3.setText("Pesquisar");
+        btnPesquisar.setText("Pesquisar");
+        btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPesquisarActionPerformed(evt);
+            }
+        });
 
-        jButton2.setText("Limpar");
+        btnLimpar.setText("Limpar");
+        btnLimpar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimparActionPerformed(evt);
+            }
+        });
 
-        jButton1.setText("Salvar");
+        btnSalvar.setText("Salvar");
+        btnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSalvarActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -75,11 +120,11 @@ public class Usuarios extends javax.swing.JPanel {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGap(78, 78, 78)
-                .addComponent(jButton3)
+                .addComponent(btnPesquisar)
                 .addGap(125, 125, 125)
-                .addComponent(jButton2)
+                .addComponent(btnLimpar)
                 .addGap(117, 117, 117)
-                .addComponent(jButton1)
+                .addComponent(btnSalvar)
                 .addContainerGap(178, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -87,9 +132,9 @@ public class Usuarios extends javax.swing.JPanel {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2)
-                    .addComponent(jButton3))
+                    .addComponent(btnSalvar)
+                    .addComponent(btnLimpar)
+                    .addComponent(btnPesquisar))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -189,15 +234,110 @@ public class Usuarios extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
+        try {
+            if (usuarioAtual == null) {
+                usuarioAtual = new Usuario();
+            }
+
+            usuarioAtual.setNome(txtCategoria.getText().trim());
+            usuarioAtual.setLogin(txtLogin.getText().trim());
+            usuarioAtual.setSenha(txtSenha.getText());
+            usuarioAtual.setAtivo(true);
+
+            // Limpa permissões antigas antes de re-mapear (SRP)
+            usuarioAtual.getPermissoes().clear();
+
+            // Mapeia os JCheckBox selecionados em objetos da classe Permissao
+            if (chkCadastros.isSelected()) {
+                usuarioAtual.adicionarPermissao(new Permissao("ROLE_CADASTROS", "Acesso a telas cadastrais"));
+            }
+            if (chkRelatorios.isSelected()) {
+                usuarioAtual.adicionarPermissao(new Permissao("ROLE_RELATORIOS", "Acesso a relatórios"));
+            }
+            if (chkPedidos.isSelected()) {
+                usuarioAtual.adicionarPermissao(new Permissao("ROLE_PEDIDOS", "Acesso ao painel PDV"));
+            }
+            if (chkUsuarios.isSelected()) {
+                usuarioAtual.adicionarPermissao(new Permissao("ROLE_ADMIN", "Acesso total ao sistema"));
+            }
+
+            String confSenha = txtSenhaRepetida.getText();
+
+            // Envia para o Service processar a segurança e persistência em cascata
+            usuarioService.registrarUsuario(usuarioAtual, confSenha);
+
+            JOptionPane.showMessageDialog(this, "Usuário cadastrado com sucesso no ecossistema seguro!");
+            limparCampos();
+
+        } catch (IllegalArgumentException e) {
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Validação de Segurança", JOptionPane.WARNING_MESSAGE);
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Erro operacional ao persistir usuário: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnSalvarActionPerformed
+
+    private void btnLimparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimparActionPerformed
+        limparCampos();
+    }//GEN-LAST:event_btnLimparActionPerformed
+
+    private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
+        java.awt.Window janelaPai = javax.swing.SwingUtilities.getWindowAncestor(this);
+    javax.swing.JDialog janelaModal = new javax.swing.JDialog(janelaPai, "Pesquisa de Usuários do Sistema", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+    
+    // 2. Cria o painel que você desenhou no Design
+    JanelaPesquisaRapida painelBusca = new JanelaPesquisaRapida();
+    painelBusca.inicializarPesquisa("USUARIO"); // Injeta o tipo de consulta de negócio (SRP)
+    
+    // 3. Embuti e configura a geometria visual
+    janelaModal.add(painelBusca);
+    janelaModal.pack();
+    janelaModal.setLocationRelativeTo(janelaPai);
+    janelaModal.setAlwaysOnTop(true);
+    
+    // Escuta quando o painel de busca disparar o setVisible(false) e destrói a janela liberando o fluxo
+    painelBusca.addComponentListener(new java.awt.event.ComponentAdapter() {
+        @Override
+        public void componentHidden(java.awt.event.ComponentEvent e) {
+            janelaModal.dispose();
+        }
+    });
+    
+    janelaModal.setVisible(true); // Trava o fluxo até o faturamento da escolha
+
+    // 4. Coleta o resultado processado de forma limpa e coesa
+    Classes.Usuario usuarioEscolhido = (Classes.Usuario) painelBusca.getObjetoSelecionado();
+    if (usuarioEscolhido != null) {
+        this.usuarioAtual = usuarioEscolhido;
+        txtID.setText(String.valueOf(usuarioEscolhido.getId()));
+        txtCategoria.setText(usuarioEscolhido.getNome());
+        txtLogin.setText(usuarioEscolhido.getLogin());
+        txtSenha.setText(usuarioEscolhido.getSenha());
+        txtSenhaRepetida.setText(usuarioEscolhido.getSenha());
+        
+        chkCadastros.setSelected(false);
+        chkRelatorios.setSelected(false);
+        chkPedidos.setSelected(false);
+        chkUsuarios.setSelected(false);
+        
+        for (Classes.Permissao perm : usuarioEscolhido.getPermissoes()) {
+            if ("ROLE_CADASTROS".equals(perm.getNome())) chkCadastros.setSelected(true);
+            if ("ROLE_RELATORIOS".equals(perm.getNome())) chkRelatorios.setSelected(true);
+            if ("ROLE_PEDIDOS".equals(perm.getNome())) chkPedidos.setSelected(true);
+            if ("ROLE_ADMIN".equals(perm.getNome())) chkUsuarios.setSelected(true);
+        }
+    }
+    }//GEN-LAST:event_btnPesquisarActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnLimpar;
+    private javax.swing.JButton btnPesquisar;
+    private javax.swing.JButton btnSalvar;
     private javax.swing.JCheckBox chkCadastros;
     private javax.swing.JCheckBox chkPedidos;
     private javax.swing.JCheckBox chkRelatorios;
     private javax.swing.JCheckBox chkUsuarios;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
     private javax.swing.JComboBox<String> jComboBox1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
