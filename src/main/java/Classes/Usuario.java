@@ -19,33 +19,27 @@ public class Usuario {
     @Column(name = "Login", nullable = false, unique = true, length = 50)
     private String login;
 
-    @Column(name = "Senha", nullable = false, length = 255) // Length 255 ideal para hash criptográfico (ex: BCrypt)
+    @Column(name = "Senha", nullable = false, length = 255)
     private String senha;
-    
-    @Transient // <-- ADICIONE ESTA ANOTAÇÃO AQUI! impede o erro "Unknown column"
-    private boolean ativo = true;
 
-    //@Column(name = "Ativo", nullable = false)
-   //private boolean ativo = true;
+    @Column(name = "Tipo", length = 50)
+    private String tipo;
+
+    @Column(name = "Ativo", nullable = false)
+    private boolean ativo = true;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
-        name = "usuarios_permissoes", // Nome da tabela associativa intermediária no MySQL
+        name = "usuarios_permissoes", // Nome padrão profissional e sem erros de digitação
         joinColumns = @JoinColumn(name = "fk_Usuario"),
         inverseJoinColumns = @JoinColumn(name = "fk_Permissao")
     )
     private Set<Permissao> permissoes = new HashSet<>();
 
-    public Usuario() {
-    }
+    public Usuario() {}
 
-    // Métodos auxiliares para gerenciamento de permissões (SRP)
     public void adicionarPermissao(Permissao permissao) {
         this.permissoes.add(permissao);
-    }
-
-    public void removerPermissao(Permissao permissao) {
-        this.permissoes.remove(permissao);
     }
 
     // Getters e Setters
@@ -60,6 +54,9 @@ public class Usuario {
 
     public String getSenha() { return senha; }
     public void setSenha(String senha) { this.senha = senha; }
+
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
     public boolean isAtivo() { return ativo; }
     public void setAtivo(boolean ativo) { this.ativo = ativo; }

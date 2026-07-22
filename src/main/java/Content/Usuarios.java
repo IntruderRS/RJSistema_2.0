@@ -12,11 +12,22 @@ public class Usuarios extends javax.swing.JPanel {
 
     public Usuarios() {
         initComponents();
-       btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPesquisarActionPerformed(evt);
+        configurarLimpezaAutomaticaAoClicar();
+    }
+
+    private void configurarLimpezaAutomaticaAoClicar() {
+        java.awt.event.FocusAdapter ouvinteSenha = new java.awt.event.FocusAdapter() {
+            @Override
+            public void focusGained(java.awt.event.FocusEvent evt) {
+                javax.swing.JPasswordField campo = (javax.swing.JPasswordField) evt.getSource();
+                // Limpa o campo automaticamente ao ganhar o foco para o usuário não ter que apagar os asteriscos
+                campo.setText("");
             }
-        });
+        };
+
+        // Vincula o comportamento nos dois campos de senha do formulário
+        txtSenha.addFocusListener(ouvinteSenha);
+        txtSenhaRepetida.addFocusListener(ouvinteSenha);
     }
 
     private void limparCampos() {
@@ -25,14 +36,23 @@ public class Usuarios extends javax.swing.JPanel {
         txtLogin.setText("");
         txtSenha.setText("");
         txtSenhaRepetida.setText("");
-        jComboBox1.setSelectedIndex(-1);
+
+        txtSenha.setEchoChar('*');
+        txtSenhaRepetida.setEchoChar('*');
+        if (chkMostrarSenha != null) {
+            chkMostrarSenha.setSelected(false);
+        }
+
+        if (jComboBox1 != null) {
+            jComboBox1.setSelectedIndex(-1);
+        }
 
         chkCadastros.setSelected(false);
         chkRelatorios.setSelected(false);
         chkPedidos.setSelected(false);
         chkUsuarios.setSelected(false);
 
-        usuarioAtual = null;
+        this.usuarioAtual = new Classes.Usuario();
         txtCategoria.requestFocus();
     }
 
@@ -49,9 +69,7 @@ public class Usuarios extends javax.swing.JPanel {
         jLabel5 = new javax.swing.JLabel();
         txtLogin = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        txtSenha = new javax.swing.JTextField();
         jLabel7 = new javax.swing.JLabel();
-        txtSenhaRepetida = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         chkCadastros = new javax.swing.JCheckBox();
         jLabel8 = new javax.swing.JLabel();
@@ -62,6 +80,9 @@ public class Usuarios extends javax.swing.JPanel {
         btnPesquisar = new javax.swing.JButton();
         btnLimpar = new javax.swing.JButton();
         btnSalvar = new javax.swing.JButton();
+        txtSenha = new javax.swing.JPasswordField();
+        txtSenhaRepetida = new javax.swing.JPasswordField();
+        chkMostrarSenha = new javax.swing.JCheckBox();
 
         setForeground(new java.awt.Color(205, 205, 205));
 
@@ -138,6 +159,17 @@ public class Usuarios extends javax.swing.JPanel {
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
+        txtSenha.setText("jPasswordField1");
+
+        txtSenhaRepetida.setText("jPasswordField1");
+
+        chkMostrarSenha.setText("Mostrar Senha");
+        chkMostrarSenha.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chkMostrarSenhaActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -155,26 +187,27 @@ public class Usuarios extends javax.swing.JPanel {
                         .addComponent(chkPedidos)
                         .addGap(36, 36, 36)
                         .addComponent(chkUsuarios))
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addGap(237, 237, 237)
-                            .addComponent(jLabel7)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtSenhaRepetida, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGap(30, 30, 30))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel5)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel5)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(jLabel6)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jLabel7)
+                                    .addGap(18, 18, 18)
+                                    .addComponent(txtSenhaRepetida)))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jLabel4)
                                 .addGap(18, 18, 18)
-                                .addComponent(txtLogin, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jLabel6)
-                                .addGap(18, 18, 18)
-                                .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 141, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                        .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                            .addComponent(jLabel4)
-                            .addGap(18, 18, 18)
-                            .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(txtCategoria, javax.swing.GroupLayout.PREFERRED_SIZE, 472, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(26, 26, 26)
+                        .addComponent(chkMostrarSenha, javax.swing.GroupLayout.PREFERRED_SIZE, 118, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
@@ -186,7 +219,7 @@ public class Usuarios extends javax.swing.JPanel {
                             .addGroup(layout.createSequentialGroup()
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, 192, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(0, 0, Short.MAX_VALUE))
+                .addGap(0, 50, Short.MAX_VALUE))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -225,9 +258,10 @@ public class Usuarios extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel7, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(txtSenhaRepetida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSenha, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtSenhaRepetida, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(chkMostrarSenha))
                 .addGap(18, 18, 18)
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(421, Short.MAX_VALUE))
@@ -236,42 +270,47 @@ public class Usuarios extends javax.swing.JPanel {
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         try {
-            if (usuarioAtual == null) {
-                usuarioAtual = new Usuario();
+            // Garante que se for um cadastro novo, o objeto não carregue chaves primárias nulas
+            if (this.usuarioAtual == null || this.usuarioAtual.getId() != null) {
+                this.usuarioAtual = new Classes.Usuario();
             }
 
-            usuarioAtual.setNome(txtCategoria.getText().trim());
-            usuarioAtual.setLogin(txtLogin.getText().trim());
-            usuarioAtual.setSenha(txtSenha.getText());
-            usuarioAtual.setAtivo(true);
+            // Coleta o texto digitado exatamente do campo txtCategoria da sua tela Swing
+            String nomeDigitado = txtCategoria.getText().trim();
+            this.usuarioAtual.setNome(nomeDigitado);
+            this.usuarioAtual.setLogin(txtLogin.getText().trim());
+            this.usuarioAtual.setSenha(txtSenha.getText());
+            this.usuarioAtual.setAtivo(true);
 
-            // Limpa permissões antigas antes de re-mapear (SRP)
-            usuarioAtual.getPermissoes().clear();
+            if (jComboBox1.getSelectedItem() != null) {
+                this.usuarioAtual.setTipo(jComboBox1.getSelectedItem().toString());
+            }
 
-            // Mapeia os JCheckBox selecionados em objetos da classe Permissao
+            this.usuarioAtual.getPermissoes().clear();
+
             if (chkCadastros.isSelected()) {
-                usuarioAtual.adicionarPermissao(new Permissao("ROLE_CADASTROS", "Acesso a telas cadastrais"));
+                this.usuarioAtual.adicionarPermissao(new Classes.Permissao("ROLE_CADASTROS", "Acesso Cadastros"));
             }
             if (chkRelatorios.isSelected()) {
-                usuarioAtual.adicionarPermissao(new Permissao("ROLE_RELATORIOS", "Acesso a relatórios"));
+                this.usuarioAtual.adicionarPermissao(new Classes.Permissao("ROLE_RELATORIOS", "Acesso Relatórios"));
             }
             if (chkPedidos.isSelected()) {
-                usuarioAtual.adicionarPermissao(new Permissao("ROLE_PEDIDOS", "Acesso ao painel PDV"));
+                this.usuarioAtual.adicionarPermissao(new Classes.Permissao("ROLE_PEDIDOS", "Acesso Pedidos"));
             }
             if (chkUsuarios.isSelected()) {
-                usuarioAtual.adicionarPermissao(new Permissao("ROLE_ADMIN", "Acesso total ao sistema"));
+                this.usuarioAtual.adicionarPermissao(new Classes.Permissao("ROLE_ADMIN", "Acesso Usuários"));
             }
 
             String confSenha = txtSenhaRepetida.getText();
 
-            // Envia para o Service processar a segurança e persistência em cascata
-            usuarioService.registrarUsuario(usuarioAtual, confSenha);
+            // Envia para o Service processar a persistência ORM (SOLID)
+            usuarioService.registrarUsuario(this.usuarioAtual, confSenha);
 
             JOptionPane.showMessageDialog(this, "Usuário cadastrado com sucesso no ecossistema seguro!");
             limparCampos();
 
         } catch (IllegalArgumentException e) {
-            JOptionPane.showMessageDialog(this, e.getMessage(), "Validação de Segurança", JOptionPane.WARNING_MESSAGE);
+            JOptionPane.showMessageDialog(this, e.getMessage(), "Validação", JOptionPane.WARNING_MESSAGE);
         } catch (Exception e) {
             JOptionPane.showMessageDialog(this, "Erro operacional ao persistir usuário: " + e.getMessage(), "Erro", JOptionPane.ERROR_MESSAGE);
         }
@@ -283,51 +322,83 @@ public class Usuarios extends javax.swing.JPanel {
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         java.awt.Window janelaPai = javax.swing.SwingUtilities.getWindowAncestor(this);
-    javax.swing.JDialog janelaModal = new javax.swing.JDialog(janelaPai, "Pesquisa de Usuários do Sistema", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-    
-    // 2. Cria o painel que você desenhou no Design
-    JanelaPesquisaRapida painelBusca = new JanelaPesquisaRapida();
-    painelBusca.inicializarPesquisa("USUARIO"); // Injeta o tipo de consulta de negócio (SRP)
-    
-    // 3. Embuti e configura a geometria visual
-    janelaModal.add(painelBusca);
-    janelaModal.pack();
-    janelaModal.setLocationRelativeTo(janelaPai);
-    janelaModal.setAlwaysOnTop(true);
-    
-    // Escuta quando o painel de busca disparar o setVisible(false) e destrói a janela liberando o fluxo
-    painelBusca.addComponentListener(new java.awt.event.ComponentAdapter() {
-        @Override
-        public void componentHidden(java.awt.event.ComponentEvent e) {
-            janelaModal.dispose();
-        }
-    });
-    
-    janelaModal.setVisible(true); // Trava o fluxo até o faturamento da escolha
 
-    // 4. Coleta o resultado processado de forma limpa e coesa
-    Classes.Usuario usuarioEscolhido = (Classes.Usuario) painelBusca.getObjetoSelecionado();
-    if (usuarioEscolhido != null) {
-        this.usuarioAtual = usuarioEscolhido;
-        txtID.setText(String.valueOf(usuarioEscolhido.getId()));
-        txtCategoria.setText(usuarioEscolhido.getNome());
-        txtLogin.setText(usuarioEscolhido.getLogin());
-        txtSenha.setText(usuarioEscolhido.getSenha());
-        txtSenhaRepetida.setText(usuarioEscolhido.getSenha());
-        
-        chkCadastros.setSelected(false);
-        chkRelatorios.setSelected(false);
-        chkPedidos.setSelected(false);
-        chkUsuarios.setSelected(false);
-        
-        for (Classes.Permissao perm : usuarioEscolhido.getPermissoes()) {
-            if ("ROLE_CADASTROS".equals(perm.getNome())) chkCadastros.setSelected(true);
-            if ("ROLE_RELATORIOS".equals(perm.getNome())) chkRelatorios.setSelected(true);
-            if ("ROLE_PEDIDOS".equals(perm.getNome())) chkPedidos.setSelected(true);
-            if ("ROLE_ADMIN".equals(perm.getNome())) chkUsuarios.setSelected(true);
+        // 2. Instancia a janela flutuante nativa do Swing travando o fundo (Modal)
+        javax.swing.JDialog janelaModal = new javax.swing.JDialog(janelaPai, "Pesquisa de Usuários do Sistema", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
+
+        // 3. CORREÇÃO DO CONSTRUTOR: Instancia a sua classe de Design sem argumentos, cumprindo o requisito
+        Content.JanelaPesquisaRapida painelBusca = new Content.JanelaPesquisaRapida();
+
+        // Inicializa a lógica de negócio do grid de dados informando o escopo
+        painelBusca.inicializarPesquisa("USUARIO");
+
+        // 4. Acopla o painel dentro da janela e define a geometria gráfica
+        janelaModal.add(painelBusca);
+        janelaModal.pack();
+        janelaModal.setLocationRelativeTo(janelaPai);
+
+        // CORREÇÃO DO SYMBOL: Aplica a prioridade de foco na janelaModal e NÃO no painel
+        janelaModal.setAlwaysOnTop(true);
+
+        // Monitora o fechamento: quando o usuário clica em Confirmar, o painel roda setVisible(false) e fecha a modal
+        painelBusca.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentHidden(java.awt.event.ComponentEvent e) {
+                janelaModal.dispose();
+            }
+        });
+
+        // Exibe o pop-up na tela travando o faturamento do formulário até a escolha
+        janelaModal.setVisible(true);
+
+        // 5. Coleta o usuário selecionado no grid de forma limpa e segura (SOLID)
+        Classes.Usuario usuarioEscolhido = (Classes.Usuario) painelBusca.getObjetoSelecionado();
+        if (usuarioEscolhido != null) {
+            this.usuarioAtual = usuarioEscolhido;
+
+            txtID.setText(String.valueOf(usuarioEscolhido.getId()));
+            txtCategoria.setText(usuarioEscolhido.getNome());
+            txtLogin.setText(usuarioEscolhido.getLogin());
+            txtSenha.setText(usuarioEscolhido.getSenha());
+            txtSenhaRepetida.setText(usuarioEscolhido.getSenha());
+
+            if (usuarioEscolhido.getTipo() != null && jComboBox1 != null) {
+                jComboBox1.setSelectedItem(usuarioEscolhido.getTipo());
+            }
+
+            chkCadastros.setSelected(false);
+            chkRelatorios.setSelected(false);
+            chkPedidos.setSelected(false);
+            chkUsuarios.setSelected(false);
+
+            for (Classes.Permissao perm : usuarioEscolhido.getPermissoes()) {
+                if ("ROLE_CADASTROS".equals(perm.getNome())) {
+                    chkCadastros.setSelected(true);
+                }
+                if ("ROLE_RELATORIOS".equals(perm.getNome())) {
+                    chkRelatorios.setSelected(true);
+                }
+                if ("ROLE_PEDIDOS".equals(perm.getNome())) {
+                    chkPedidos.setSelected(true);
+                }
+                if ("ROLE_ADMIN".equals(perm.getNome())) {
+                    chkUsuarios.setSelected(true);
+                }
+            }
         }
-    }
     }//GEN-LAST:event_btnPesquisarActionPerformed
+
+    private void chkMostrarSenhaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkMostrarSenhaActionPerformed
+        if (chkMostrarSenha.isSelected()) {
+            // Remove os asteriscos e exibe o texto puro
+            txtSenha.setEchoChar((char) 0);
+            txtSenhaRepetida.setEchoChar((char) 0);
+        } else {
+            // Restaura a máscara padrão de asteriscos/pontos do Swing
+            txtSenha.setEchoChar('*');
+            txtSenhaRepetida.setEchoChar('*');
+        }
+    }//GEN-LAST:event_chkMostrarSenhaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -335,6 +406,7 @@ public class Usuarios extends javax.swing.JPanel {
     private javax.swing.JButton btnPesquisar;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JCheckBox chkCadastros;
+    private javax.swing.JCheckBox chkMostrarSenha;
     private javax.swing.JCheckBox chkPedidos;
     private javax.swing.JCheckBox chkRelatorios;
     private javax.swing.JCheckBox chkUsuarios;
@@ -351,7 +423,7 @@ public class Usuarios extends javax.swing.JPanel {
     private javax.swing.JTextField txtCategoria;
     private javax.swing.JTextField txtID;
     private javax.swing.JTextField txtLogin;
-    private javax.swing.JTextField txtSenha;
-    private javax.swing.JTextField txtSenhaRepetida;
+    private javax.swing.JPasswordField txtSenha;
+    private javax.swing.JPasswordField txtSenhaRepetida;
     // End of variables declaration//GEN-END:variables
 }

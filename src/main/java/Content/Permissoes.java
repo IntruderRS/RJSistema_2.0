@@ -11,11 +11,6 @@ public class Permissoes extends javax.swing.JPanel {
 
     public Permissoes() {
         initComponents();
-         btnPesquisar.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPesquisarActionPerformed(evt);
-            }
-        });
     }
 
     private void limparCampos() {
@@ -140,7 +135,7 @@ public class Permissoes extends javax.swing.JPanel {
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
         try {
             if (permissaoAtual == null) {
-                permissaoAtual = new Permissao();
+                permissaoAtual = new Classes.Permissao();
             }
             permissaoAtual.setNome(txtCategoria.getText().trim().toUpperCase());
             permissaoAtual.setDescricao("Grupo de acesso visual " + txtCategoria.getText());
@@ -159,31 +154,31 @@ public class Permissoes extends javax.swing.JPanel {
 
     private void btnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPesquisarActionPerformed
         java.awt.Window janelaPai = javax.swing.SwingUtilities.getWindowAncestor(this);
-    javax.swing.JDialog janelaModal = new javax.swing.JDialog(janelaPai, "Pesquisa de Grupos de Permissões", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
-    
-    JanelaPesquisaRapida painelBusca = new JanelaPesquisaRapida();
-    painelBusca.inicializarPesquisa("PERMISSAO");
-    
-    janelaModal.add(painelBusca);
-    janelaModal.pack();
-    janelaModal.setLocationRelativeTo(janelaPai);
-    janelaModal.setAlwaysOnTop(true);
-    
-    painelBusca.addComponentListener(new java.awt.event.ComponentAdapter() {
-        @Override
-        public void componentHidden(java.awt.event.ComponentEvent e) {
-            janelaModal.dispose();
-        }
-    });
-    
-    janelaModal.setVisible(true);
+        javax.swing.JDialog janelaModal = new javax.swing.JDialog(janelaPai, "Pesquisa de Grupos de Permissões", java.awt.Dialog.ModalityType.APPLICATION_MODAL);
 
-    Classes.Permissao permissaoEscolhida = (Classes.Permissao) painelBusca.getObjetoSelecionado();
-    if (permissaoEscolhida != null) {
-        this.permissaoAtual = permissaoEscolhida;
-        txtID.setText(String.valueOf(permissaoEscolhida.getId()));
-        txtCategoria.setText(permissaoEscolhida.getNome());
-    }
+        JanelaPesquisaRapida painelBusca = new JanelaPesquisaRapida();
+        painelBusca.inicializarPesquisa("PERMISSAO");
+
+        janelaModal.add(painelBusca);
+        janelaModal.pack();
+        janelaModal.setLocationRelativeTo(janelaPai);
+        janelaModal.setAlwaysOnTop(true);
+
+        painelBusca.addComponentListener(new java.awt.event.ComponentAdapter() {
+            @Override
+            public void componentHidden(java.awt.event.ComponentEvent e) {
+                janelaModal.dispose();
+            }
+        });
+
+        janelaModal.setVisible(true);
+
+        Classes.Permissao permissaoEscolhida = (Classes.Permissao) painelBusca.getObjetoSelecionado();
+        if (permissaoEscolhida != null) {
+            this.permissaoAtual = permissaoEscolhida;
+            txtID.setText(String.valueOf(permissaoEscolhida.getId()));
+            txtCategoria.setText(permissaoEscolhida.getNome());
+        }
     }//GEN-LAST:event_btnPesquisarActionPerformed
 
 

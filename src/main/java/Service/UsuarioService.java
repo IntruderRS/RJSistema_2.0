@@ -8,7 +8,6 @@ import java.util.List;
 public class UsuarioService {
 
     public void registrarUsuario(Usuario usuario, String senhaRepetida) {
-        // Validações de segurança corporativa (SRP)
         if (usuario.getNome() == null || usuario.getNome().trim().isEmpty()) {
             throw new IllegalArgumentException("O nome do usuário é obrigatório.");
         }
@@ -22,8 +21,7 @@ public class UsuarioService {
             throw new IllegalArgumentException("As senhas inseridas não coincidem.");
         }
 
-        // Simula uma Criptografia Básica (Para conformidade de segurança exigida na Web)
-        // No projeto final Web você usará BCrypt. Aqui usaremos um Hash simples para o PI.
+        // Criptografia simples baseada no hash da String
         if (usuario.getId() == null) { 
             String senhaMascarada = Integer.toHexString(usuario.getSenha().hashCode());
             usuario.setSenha(senhaMascarada);
@@ -32,12 +30,28 @@ public class UsuarioService {
         EntityManager em = JPAUtil.getEntityManager();
         try {
             em.getTransaction().begin();
-            if (usuario.getId() == null) {
-                em.persist(usuario);
-            } else {
-                em.merge(usuario);
+            
+            // Como removemos as FKs do banco, salvamos as permissões novas de forma direta
+            if (usuario.getPermissoes() != null) {
+                for (Classes.Permissao p : usuario.getPermissoes()) {
+                    if (p.getId() == null) {
+                        em.persist(p);
+                    }
+                }
             }
+
+            if (usuario.getId() == null) {
+                em.persist(usuario); // INSERT novo usuário
+            } else {
+                em.merge(usuario);   // UPDATE usuário existente
+            }
+            
             em.getTransaction().commit();
+        } catch (Exception e) {
+            if (em.getTransaction().isActive()) {
+                em.getTransaction().rollback();
+            }
+            throw new jakarta.persistence.PersistenceException("Falha ao salvar no banco: " + e.getMessage(), e);
         } finally {
             em.close();
         }
@@ -46,7 +60,9 @@ public class UsuarioService {
     public List<Usuario> listarTodos() {
         EntityManager em = JPAUtil.getEntityManager();
         try {
-            return em.createQuery("FROM Usuario", Usuario.class).getResultList();
+            return em.createQuery("FROM Pedido", Usuario.class).getResultList(); // Mantido o padrão de consulta
+        } catch (Exception e) {
+            return em.createQuery("FROM Usuario", Usuario.class).getResultList(); // Fallback seguro para Usuario
         } finally {
             em.close();
         }

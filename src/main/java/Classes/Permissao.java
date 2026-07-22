@@ -12,20 +12,18 @@ public class Permissao {
     private Long id;
 
     @Column(name = "Nome", nullable = false, unique = true, length = 50)
-    private String nome; // Ex: "ADMIN", "VENDEDOR", "GERENTE"
+    private String nome; // Ex: ROLE_ADMIN, ROLE_VENDEDOR
 
     @Column(name = "Descricao")
     private String descricao;
 
-    public Permissao() {
-    }
+    public Permissao() {}
 
     public Permissao(String nome, String descricao) {
         this.nome = nome;
         this.descricao = descricao;
     }
 
-    // Getters e Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
 
@@ -36,7 +34,5 @@ public class Permissao {
     public void setDescricao(String descricao) { this.descricao = descricao; }
 
     @Override
-    public String toString() {
-        return this.nome; // Facilita exibição em ComboBoxes ou tabelas
-    }
+    public String toString() { return this.nome; }
 }
