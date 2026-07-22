@@ -1,12 +1,14 @@
 package Content;
 
 import Classes.Produto;
-import br.com.sistemarj.rjsistema.persistencia.ProdutoDAO;
+import Service.ProdutoService;
 import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 public class ListaProdutos extends javax.swing.JPanel {
+
+    private Classes.Produto produtoSelecionado;
 
     public ListaProdutos() {
         initComponents();
@@ -24,18 +26,25 @@ public class ListaProdutos extends javax.swing.JPanel {
 
     }
 
+    // Getter público exigido pela TelaPedidos para coletar o resultado da busca
+    public Classes.Produto getProdutoSelected() { // Renomeado ou mantido conforme assinatura
+        return this.produtoSelecionado;
+    }
+     // Getter alternativo para bater com a chamada da TelaPedidos
+    public Classes.Produto getProdutoSelecionado() {
+        return this.produtoSelecionado;
+    }
+
     public void atualizarTabela() {
 
-        DefaultTableModel modelo = (DefaultTableModel) tblProdutos.getModel();
-        modelo.setNumRows(0); // LIMPA A TABELA ANTES DE REPREENCHER
+         DefaultTableModel modelo = (DefaultTableModel) tblProdutos.getModel();
+        modelo.setNumRows(0); // Limpa a tabela antes de repreeencher
 
-        ProdutoDAO dao = new ProdutoDAO();
-        List<Produto> lista = dao.listarTodos();
+        // CORREÇÃO SOLID: Utilizando a camada de serviço desacoplada do banco
+        ProdutoService service = new ProdutoService();
+        List<Produto> lista = service.listarTodos();
 
-        // Limpa a tabela antes de preencher para não duplicar dados
-        modelo.setNumRows(0);
-
-        // Adiciona cada cliente na linha da tabela
+        // Adiciona cada produto na linha da tabela
         for (Produto p : lista) {
             modelo.addRow(new Object[]{
                 p.getId(),
@@ -50,10 +59,10 @@ public class ListaProdutos extends javax.swing.JPanel {
                 p.getLote(),
                 p.getNCM(),
                 p.getPeso(),
-                p.getPorcentagemLucro(),
+                p.getPorcentagemLucro(), // Nomenclatura nominal corrigida com "n"
                 p.getValorCusto(),
                 p.getObservacao(),
-                });                            
+            });                            
         }
     }
 
@@ -65,6 +74,7 @@ public class ListaProdutos extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblProdutos = new javax.swing.JTable();
         jButton1 = new javax.swing.JButton();
+        btnSelecionar = new javax.swing.JButton();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -94,6 +104,13 @@ public class ListaProdutos extends javax.swing.JPanel {
             }
         });
 
+        btnSelecionar.setText("Selecionar");
+        btnSelecionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelecionarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -107,6 +124,8 @@ public class ListaProdutos extends javax.swing.JPanel {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnSelecionar)
+                .addGap(43, 43, 43)
                 .addComponent(jButton1)
                 .addGap(125, 125, 125))
         );
@@ -118,7 +137,9 @@ public class ListaProdutos extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 570, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jButton1)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jButton1)
+                    .addComponent(btnSelecionar))
                 .addContainerGap(27, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -128,36 +149,63 @@ public class ListaProdutos extends javax.swing.JPanel {
     }//GEN-LAST:event_formComponentShown
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        int linha = tblProdutos.getSelectedRow(); // Verifique o nome da sua tabela
+        int linha = tblProdutos.getSelectedRow();
 
-    if (linha != -1) {
-        try {
-            // 1. Pega o ID da primeira coluna (índice 0)
-            Long id = Long.valueOf(tblProdutos.getValueAt(linha, 0).toString());
+        if (linha != -1) {
+            try {
+                Long id = Long.valueOf(tblProdutos.getValueAt(linha, 0).toString());
 
-            // 2. Busca o produto completo no banco
-            ProdutoDAO dao = new ProdutoDAO();
-            Classes.Produto selecionado = dao.buscarPorId(id);
+                // SOLID: Chamando o service em vez do DAO bruto
+                ProdutoService service = new ProdutoService();
+                Classes.Produto selecionado = service.buscarPorId(id);
 
-            if (selecionado != null) {
-                // 3. CHAMA O DASHBOARD PARA TROCAR A TELA
-                // Aqui usamos o método que criamos para o Cadastro de Produtos
-                Dashboard.MainDashboard.exibirEdicaoProduto(selecionado);
-                
-                // Esconde a lista atual
-                this.setVisible(false);
+                if (selecionado != null) {
+                    Dashboard.MainDashboard.exibirEdicaoProduto(selecionado);
+                    this.setVisible(false);
+                }
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Erro operacional ao descarregar produto: " + e.getMessage());
             }
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Erro ao carregar produto: " + e.getMessage());
-            e.printStackTrace();
+        } else {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione um produto na tabela.");
         }
-    } else {
-        JOptionPane.showMessageDialog(this, "Por favor, selecione um produto na tabela.");
-    }
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void btnSelecionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarActionPerformed
+        // BOTÃO SELECIONAR CONFIGURADO
+        int linha = tblProdutos.getSelectedRow();
+        
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione um produto na tabela primeiro.");
+            return;
+        }
+        
+        Long id = Long.valueOf(tblProdutos.getValueAt(linha, 0).toString());
+        
+        ProdutoService service = new ProdutoService();
+        this.produtoSelecionado = service.buscarPorId(id);
+        
+        // Oculta o painel para fechar a modal automática na TelaPedidos
+        this.setVisible(false);
+    }//GEN-LAST:event_btnSelecionarActionPerformed
+
+     private void tblProdutosMouseClicked(java.awt.event.MouseEvent evt) {
+        // Atalho de Clique Duplo na linha da tabela
+        if (evt.getClickCount() == 2) { 
+            int linha = tblProdutos.getSelectedRow();
+            if (linha != -1) {
+                Long id = Long.valueOf(tblProdutos.getValueAt(linha, 0).toString()); 
+                
+                ProdutoService service = new ProdutoService();
+                this.produtoSelecionado = service.buscarPorId(id);
+                
+                this.setVisible(false); 
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnSelecionar;
     private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;

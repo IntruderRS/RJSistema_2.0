@@ -1,6 +1,7 @@
 package Content;
 
 import Classes.Cliente;
+import Service.ClienteService;
 import br.com.sistemarj.rjsistema.persistencia.ClienteDAO;
 import javax.swing.table.DefaultTableModel;
 import java.util.List;
@@ -29,13 +30,9 @@ public class ListaClientes extends javax.swing.JPanel {
         DefaultTableModel modelo = (DefaultTableModel) tblListaClientes.getModel();
         modelo.setNumRows(0); // LIMPA A TABELA ANTES DE REPREENCHER
 
-        ClienteDAO dao = new ClienteDAO();
-        List<Cliente> lista = dao.listarTodos();
+        ClienteService service = new ClienteService();
+        List<Cliente> lista = service.listarTodos();
 
-        // Limpa a tabela antes de preencher para não duplicar dados
-        modelo.setNumRows(0);
-
-        // Adiciona cada cliente na linha da tabela
         for (Cliente c : lista) {
             modelo.addRow(new Object[]{
                 c.getId(),
@@ -52,8 +49,7 @@ public class ListaClientes extends javax.swing.JPanel {
                 c.getTelefone(),
                 c.getWhatsapp(),
                 c.getEmail(),
-                c.getObservacao(),
-            });
+                c.getObservacao(),});
         }
     }
 
@@ -65,6 +61,7 @@ public class ListaClientes extends javax.swing.JPanel {
         jScrollPane1 = new javax.swing.JScrollPane();
         tblListaClientes = new javax.swing.JTable();
         btnEditar = new javax.swing.JButton();
+        btnSelecionar = new javax.swing.JButton();
 
         addComponentListener(new java.awt.event.ComponentAdapter() {
             public void componentShown(java.awt.event.ComponentEvent evt) {
@@ -94,6 +91,13 @@ public class ListaClientes extends javax.swing.JPanel {
             }
         });
 
+        btnSelecionar.setText("Selecionar");
+        btnSelecionar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSelecionarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
@@ -103,6 +107,8 @@ public class ListaClientes extends javax.swing.JPanel {
                 .addContainerGap())
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(btnSelecionar)
+                .addGap(49, 49, 49)
                 .addComponent(btnEditar)
                 .addGap(135, 135, 135))
             .addGroup(layout.createSequentialGroup()
@@ -117,7 +123,9 @@ public class ListaClientes extends javax.swing.JPanel {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 605, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(btnEditar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnEditar)
+                    .addComponent(btnSelecionar))
                 .addContainerGap(31, Short.MAX_VALUE))
         );
     }// </editor-fold>//GEN-END:initComponents
@@ -126,32 +134,68 @@ public class ListaClientes extends javax.swing.JPanel {
         int linha = tblListaClientes.getSelectedRow();
 
         if (linha != -1) {
-            // Pega o ID da tabela
             Long id = Long.valueOf(tblListaClientes.getValueAt(linha, 0).toString());
 
-            // Busca o cliente no banco
-            ClienteDAO dao = new ClienteDAO();
-            Classes.Cliente selecionado = dao.buscarPorId(id);
+            ClienteService service = new ClienteService();
+            Classes.Cliente selecionado = service.buscarPorId(id);
 
             if (selecionado != null) {
-                // CHAMA O DASHBOARD PARA TROCAR A TELA
                 Dashboard.MainDashboard.exibirEdicao(selecionado);
-
-                // Opcional: Esconde a lista atual se ela for um painel separado
                 this.setVisible(false);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Selecione um cliente para editar.");
         }
+
     }//GEN-LAST:event_btnEditarActionPerformed
 
     private void formComponentShown(java.awt.event.ComponentEvent evt) {//GEN-FIRST:event_formComponentShown
         atualizarTabela();
     }//GEN-LAST:event_formComponentShown
 
+    private void btnSelecionarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSelecionarActionPerformed
+        int linha = tblListaClientes.getSelectedRow();
+
+        if (linha == -1) {
+            JOptionPane.showMessageDialog(this, "Por favor, selecione um cliente na tabela primeiro.");
+            return;
+        }
+
+        Long id = Long.valueOf(tblListaClientes.getValueAt(linha, 0).toString());
+
+        ClienteService service = new ClienteService();
+        this.clienteSelecionado = service.buscarPorId(id);
+
+        this.setVisible(false);
+    }//GEN-LAST:event_btnSelecionarActionPerformed
+
+    private Classes.Cliente clienteSelecionado;
+
+// Getter para a tela de pedidos conseguir coletar o resultado
+    public Classes.Cliente getClienteSelecionado() {
+        return this.clienteSelecionado;
+    }
+
+// No evento de clique duplo da sua Tabela ou no botão "Selecionar" da lista, coloque:
+    private void tblListaClientesMouseClicked(java.awt.event.MouseEvent evt) {
+         if (evt.getClickCount() == 2) { 
+            int linha = tblListaClientes.getSelectedRow();
+            if (linha != -1) {
+                Long id = Long.valueOf(tblListaClientes.getValueAt(linha, 0).toString()); 
+                
+                ClienteService service = new ClienteService();
+                
+                // CORREÇÃO: Altere de getClienteSelecionado() para buscarPorId(id)
+                this.clienteSelecionado = service.buscarPorId(id);
+                
+                this.setVisible(false); 
+            }
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnEditar;
+    private javax.swing.JButton btnSelecionar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tblListaClientes;

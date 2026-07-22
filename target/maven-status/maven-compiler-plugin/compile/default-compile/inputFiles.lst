@@ -14,6 +14,7 @@ D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\ja
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Categoria.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Cliente.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Fornecedor.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\ItemPedido.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Pedido.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Produto.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Classes\Usuario.java
@@ -33,4 +34,5 @@ D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\ja
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\CategoriaService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\ClienteService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\FornecedorService.java
+D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\PedidoService.java
 D:\Documents\SENAC\INTEGRADOR\UC15\ATIVIDADE 6 - FINAL\RJSistema_2.0\src\main\java\Service\ProdutoService.java
